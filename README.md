@@ -8,6 +8,6 @@ The main page  have  buttons of the page to allow going to the “add tasks” a
 
 ### Add a Task
 On the “Add a Task” page, allow users to type in details about a new task, specifically a title and a body. When users click the “submit” button, show a “submitted!” label on the page.
-![image description](screenshots/ander 2.png)
+![image description](screenshots/ander2.png)
 ### All Tasks
 ![image description](screenshots/ander3.png)
