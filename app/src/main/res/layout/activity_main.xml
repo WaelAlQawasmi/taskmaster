@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:id="@+id/Uname"
+        android:layout_width="229dp"
+        android:layout_height="53dp"
+        android:fontFamily="serif-monospace"
+        android:text="USERNAME"
+        android:textColor="#757575"
+        android:textSize="44sp"
+        app:layout_constraintBottom_toTopOf="@+id/button3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/MyTasks"
+        tools:ignore="MissingConstraints,TextContrastCheck,TextContrastCheck" />
+
+    <TextView
+        android:id="@+id/Name"
+        android:layout_width="229dp"
+        android:layout_height="53dp"
+        android:fontFamily="serif-monospace"
+        android:text="my task"
+        android:textColor="#757575"
+        android:textSize="44sp"
+        app:layout_constraintBottom_toTopOf="@+id/imageView6"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints,TextContrastCheck,TextContrastCheck" />
+
+    <Button
+        android:id="@+id/MyTasks"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/MyTasks"
+        app:layout_constraintBottom_toTopOf="@+id/Uname"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/Addtask"
+        app:layout_constraintTop_toBottomOf="@+id/imageView6"
+        tools:ignore="MissingConstraints,DuplicateSpeakableTextCheck" />
+
+    <Button
+        android:id="@+id/Addtask"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/AddTask"
+        app:layout_constraintBottom_toTopOf="@+id/Uname"
+        app:layout_constraintEnd_toStartOf="@+id/MyTasks"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView6"
+        tools:ignore="MissingConstraints" />
+
+    <ImageView
+
+        android:id="@+id/imageView6"
+        android:layout_width="140dp"
+        android:layout_height="145dp"
+        app:layout_constraintBottom_toTopOf="@+id/MyTasks"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Name"
+        app:srcCompat="@drawable/_12x512bb" />
+
+    <Button
+        android:id="@+id/taskthree"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="taskthree"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tasktwo" />
+
+    <Button
+        android:id="@+id/tasktwo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="tasktwo"
+        app:layout_constraintBottom_toTopOf="@+id/taskthree"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/taskOne" />
+
+    <Button
+        android:id="@+id/taskOne"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="taskOne"
+        app:layout_constraintBottom_toTopOf="@+id/tasktwo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Uname" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">TaskMaster</string>
+    <string name="textview">TextView</string>
+    <string name="AddTask">Add Task</string>
+    <string name="MyTasks">My Tasks</string>
+    <string name="todo">TODO</string>
+</resources>
