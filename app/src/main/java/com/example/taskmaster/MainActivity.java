@@ -16,7 +16,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity  {
     private static final String TAG ="RES" ;
     private final View.OnClickListener mClickMeButtonListener = new View.OnClickListener() {
         @Override
@@ -60,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         myTasks.setOnClickListener(view -> {
+          Log.i("wgu","gooo");
             Intent AllTasksActivityIntent = new Intent(getApplicationContext(), AllTasks.class);
 
             startActivity(AllTasksActivityIntent);
