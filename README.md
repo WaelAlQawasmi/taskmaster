@@ -20,7 +20,7 @@ On the “Add a Task” page, allow users to type in details about a new task, s
 ### All Tasks
 
 you can see all tasks and you can acess to any task you need the see the titles 
-![image description](screenshots/ander2.png)
+![image description](screenshots/allTasks.png)
 ### Task deletes 
 where the user can acces to it from home page
 ![image description](screenshots/task_d.png)
