@@ -23,7 +23,8 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity  {
     private static final String TAG ="RES" ;
-    List<Task> tasksDetales = new ArrayList<>();
+    //List<Task> tasksDetales = new ArrayList<>();
+
     private final View.OnClickListener mClickMeButtonListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -43,7 +44,7 @@ public class MainActivity extends AppCompatActivity  {
 
         Button AddtaskButton = findViewById(R.id.Addtask);
         Button myTasks = findViewById(R.id.MyTasks);
-
+        List<Task> tasksDetales= TasksDatabase.getInstance(getApplicationContext()).TasksDea().getAll();
         myTasks.setOnClickListener(view -> {
           Log.i("wgu","gooo");
             Intent AllTasksActivityIntent = new Intent(getApplicationContext(), AllTasks.class);
@@ -55,8 +56,6 @@ public class MainActivity extends AppCompatActivity  {
 
 
         AddtaskButton.setOnClickListener(mClickMeButtonListener);
-
-        initialiseData();
 
 
 
@@ -85,15 +84,15 @@ public class MainActivity extends AppCompatActivity  {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
-    private void initialiseData() {
-        tasksDetales.add(new Task("TASK 1", "GO TO", "COMPLETE"));
-        tasksDetales.add(new Task("TASK2", "GO 8TO", "assigned"));
-        tasksDetales.add(new Task("TASK 3", "GO 2TO", "COMPLETE"));
-
-        tasksDetales.add(new Task("TASK 4", "GO 1TO", "COMPLETE"));
-        tasksDetales.add(new Task("TASK 7", "GO 8TO", "assigned"));
-        tasksDetales.add(new Task("TASK 52", "GO TO", " in progress"));
-    }
+//    private void initialiseData() {
+//        tasksDetales.add(new Task("TASK 1", "GO TO", "COMPLETE"));
+//        tasksDetales.add(new Task("TASK2", "GO 8TO", "assigned"));
+//        tasksDetales.add(new Task("TASK 3", "GO 2TO", "COMPLETE"));
+//
+//        tasksDetales.add(new Task("TASK 4", "GO 1TO", "COMPLETE"));
+//        tasksDetales.add(new Task("TASK 7", "GO 8TO", "assigned"));
+//        tasksDetales.add(new Task("TASK 52", "GO TO", " in progress"));
+//    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
