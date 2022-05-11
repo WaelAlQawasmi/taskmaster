@@ -6,7 +6,7 @@ The main page  have  buttons of the page to allow going to the “add tasks” a
 , appear the username that the user can set it from setting
 and the taskes of the user
 
-![image description](screenshots/main.png)
+![image description](screenshots/home.png)
 ### go to setting 
 you can go to setting from menu
 ![image description](screenshots/main_s.png)
