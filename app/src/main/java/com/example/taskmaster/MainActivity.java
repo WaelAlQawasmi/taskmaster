@@ -2,6 +2,8 @@ package com.example.taskmaster;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -16,8 +18,12 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity  {
     private static final String TAG ="RES" ;
+    List<Task> tasksDetales = new ArrayList<>();
     private final View.OnClickListener mClickMeButtonListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -37,27 +43,6 @@ public class MainActivity extends AppCompatActivity  {
 
         Button AddtaskButton = findViewById(R.id.Addtask);
         Button myTasks = findViewById(R.id.MyTasks);
-        Button Task1=findViewById(R.id.taskOne);
-        Button Task2=findViewById(R.id.tasktwo);
-        Button Task3=findViewById(R.id.taskthree);
-        Intent TaskDeatles=new Intent(getApplicationContext(),TaskDetailActivity.class);
-        Task1.setOnClickListener(view -> {
-            TaskDeatles.putExtra("Titel", Task1.getText());
-            startActivity(TaskDeatles);
-
-        });
-
-        Task2.setOnClickListener(view -> {
-            TaskDeatles.putExtra("Titel", Task2.getText());
-            startActivity(TaskDeatles);
-
-        });
-
-        Task3.setOnClickListener(view -> {
-            TaskDeatles.putExtra("Titel", Task3.getText());
-            startActivity(TaskDeatles);
-
-        });
 
         myTasks.setOnClickListener(view -> {
           Log.i("wgu","gooo");
@@ -71,9 +56,44 @@ public class MainActivity extends AppCompatActivity  {
 
         AddtaskButton.setOnClickListener(mClickMeButtonListener);
 
+        initialiseData();
+
+
+
+        RecyclerView recyclerView = findViewById(R.id.recycle_view);
+
+        // create an adapter
+        ViewAdapter customRecyclerViewAdapter = new ViewAdapter(
+                tasksDetales, position -> {
+
+            Intent TaskDeatles=new Intent(getApplicationContext(),TaskDetailActivity.class);
+            TaskDeatles.putExtra("Titel", tasksDetales.get(position).getTitle());
+            startActivity(TaskDeatles);
+            Toast.makeText(
+                    MainActivity.this,
+
+                    "The Task  => " + tasksDetales.get(position).getTitle()+" clicked", Toast.LENGTH_SHORT).show();
+
+
+        });
+
+        // set adapter on recycler view
+        recyclerView.setAdapter(customRecyclerViewAdapter);
+
+        // set other important properties
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
+    private void initialiseData() {
+        tasksDetales.add(new Task("TASK 1", "GO TO", "COMPLETE"));
+        tasksDetales.add(new Task("TASK2", "GO 8TO", "assigned"));
+        tasksDetales.add(new Task("TASK 3", "GO 2TO", "COMPLETE"));
 
+        tasksDetales.add(new Task("TASK 4", "GO 1TO", "COMPLETE"));
+        tasksDetales.add(new Task("TASK 7", "GO 8TO", "assigned"));
+        tasksDetales.add(new Task("TASK 52", "GO TO", " in progress"));
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
