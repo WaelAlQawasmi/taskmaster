@@ -29,7 +29,7 @@ public class AddTask extends AppCompatActivity {
             Long newStudentId = TasksDatabase.getInstance(getApplicationContext()).TasksDea().insertStudent(task);
 
             Context context = getApplicationContext();
-            CharSequence text = "submit!";
+            CharSequence text = "submit!"+newStudentId;
             int duration = Toast.LENGTH_SHORT;
             Toast toast = Toast.makeText(context, text, duration);
             toast.show();
