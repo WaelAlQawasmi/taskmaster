@@ -14,9 +14,17 @@ public class TaskDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_task_detail);
         Bundle extras = getIntent().getExtras();
-     String   newString= extras.getString("Titel").toUpperCase(Locale.ROOT);
+     String   Titel= extras.getString("Titel").toUpperCase(Locale.ROOT);
+        String   description= extras.getString("description").toUpperCase(Locale.ROOT);
+        String   states= extras.getString("states").toUpperCase(Locale.ROOT);
 
         TextView Title=findViewById(R.id.title);
-        Title.setText(newString);
+        Title.setText(Titel);
+
+        TextView disc=findViewById(R.id.description);
+        disc.setText(description);
+
+        TextView statesV=findViewById(R.id.states);
+        statesV.setText(states);
     }
 }
