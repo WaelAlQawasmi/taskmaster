@@ -4,6 +4,9 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/taskmaster.iml" filepath="$PROJECT_DIR$/.idea/modules/taskmaster.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/taskmaster.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/taskmaster.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/taskmaster.app.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/taskmaster.app.androidTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/taskmaster.app.main.iml" filepath="$PROJECT_DIR$/.idea/modules/app/taskmaster.app.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/taskmaster.app.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/taskmaster.app.unitTest.iml" />
     </modules>
   </component>
 </project>
