@@ -44,9 +44,9 @@ public class MainActivity extends AppCompatActivity  {
 
         Button AddtaskButton = findViewById(R.id.Addtask);
         Button myTasks = findViewById(R.id.MyTasks);
-        List<Task> tasksDetales= TasksDatabase.getInstance(getApplicationContext()).TasksDea().getAll();
+
         myTasks.setOnClickListener(view -> {
-          Log.i("wgu","gooo");
+            Log.i("wgu","gooo");
             Intent AllTasksActivityIntent = new Intent(getApplicationContext(), AllTasks.class);
 
             startActivity(AllTasksActivityIntent);
@@ -59,29 +59,6 @@ public class MainActivity extends AppCompatActivity  {
 
 
 
-        RecyclerView recyclerView = findViewById(R.id.recycle_view);
-
-        // create an adapter
-        ViewAdapter customRecyclerViewAdapter = new ViewAdapter(
-                tasksDetales, position -> {
-
-            Intent TaskDeatles=new Intent(getApplicationContext(),TaskDetailActivity.class);
-            TaskDeatles.putExtra("Titel", tasksDetales.get(position).getTitle());
-            startActivity(TaskDeatles);
-            Toast.makeText(
-                    MainActivity.this,
-
-                    "The Task  => " + tasksDetales.get(position).getTitle()+" clicked", Toast.LENGTH_SHORT).show();
-
-
-        });
-
-        // set adapter on recycler view
-        recyclerView.setAdapter(customRecyclerViewAdapter);
-
-        // set other important properties
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
 //    private void initialiseData() {
@@ -133,6 +110,33 @@ public class MainActivity extends AppCompatActivity  {
 
     @Override
     protected void onStart() {
-        super.onStart();  //just type on start
+        super.onStart();
+
+        List<Task> tasksDetales= TasksDatabase.getInstance(getApplicationContext()).TasksDea().getAll();
+
+        //just type on start
+        RecyclerView recyclerView = findViewById(R.id.recycle_view);
+
+        // create an adapter
+        ViewAdapter customRecyclerViewAdapter = new ViewAdapter(
+                tasksDetales, position -> {
+
+            Intent TaskDeatles=new Intent(getApplicationContext(),TaskDetailActivity.class);
+            TaskDeatles.putExtra("Titel", tasksDetales.get(position).getTitle());
+            startActivity(TaskDeatles);
+            Toast.makeText(
+                    MainActivity.this,
+
+                    "The Task  => " + tasksDetales.get(position).getTitle()+" clicked", Toast.LENGTH_SHORT).show();
+
+
+        });
+
+        // set adapter on recycler view
+        recyclerView.setAdapter(customRecyclerViewAdapter);
+
+        // set other important properties
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 }
