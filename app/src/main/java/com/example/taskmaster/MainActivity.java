@@ -123,6 +123,8 @@ public class MainActivity extends AppCompatActivity  {
 
             Intent TaskDeatles=new Intent(getApplicationContext(),TaskDetailActivity.class);
             TaskDeatles.putExtra("Titel", tasksDetales.get(position).getTitle());
+            TaskDeatles.putExtra("description", tasksDetales.get(position).getBody());
+            TaskDeatles.putExtra("states", tasksDetales.get(position).getState());
             startActivity(TaskDeatles);
             Toast.makeText(
                     MainActivity.this,
