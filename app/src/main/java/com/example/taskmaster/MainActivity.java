@@ -33,7 +33,7 @@ import com.amplifyframework.datastore.generated.model.Task;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity  {
 
 
     //private static final String TAG ="RES" ;
@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
         Button myTasks = findViewById(R.id.MyTasks);
 
         myTasks.setOnClickListener(view -> {
-            Log.i("wgu", "gooo");
+            Log.i("wgu","gooo");
             Intent AllTasksActivityIntent = new Intent(getApplicationContext(), AllTasks.class);
 
             startActivity(AllTasksActivityIntent);
@@ -73,11 +73,12 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
+
         handler = new Handler(Looper.getMainLooper(), msg -> {
             String data = msg.getData().getString(DATA);
             String taskId = msg.getData().getString(TASK_ID);
-            Toast.makeText(this, "The Toast Works => " + data, Toast.LENGTH_SHORT).show();
-            Log.i(" NoTask SESS", "SSSSSSSSSS Query");
+          Toast.makeText(this, "The Toast Works => " + data, Toast.LENGTH_SHORT).show();
+            Log.i( " NoTask SESS", "Query");
             return true;
         });
 
@@ -85,9 +86,10 @@ public class MainActivity extends AppCompatActivity {
         AddtaskButton.setOnClickListener(mClickMeButtonListener);
 
 
+
     }
 
-    //    private void initialiseData() {
+//    private void initialiseData() {
 //        tasksDetales.add(new Task("TASK 1", "GO TO", "COMPLETE"));
 //        tasksDetales.add(new Task("TASK2", "GO 8TO", "assigned"));
 //        tasksDetales.add(new Task("TASK 3", "GO 2TO", "COMPLETE"));
@@ -101,7 +103,6 @@ public class MainActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
-
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
@@ -117,28 +118,24 @@ public class MainActivity extends AppCompatActivity {
 
     private void navigateToSettings() {
 
-        Intent settingsIntent = new Intent(this, SettingsActivity.class);
-        startActivity(settingsIntent);
+    Intent settingsIntent = new Intent(this, SettingsActivity.class);
+   startActivity(settingsIntent);
     }
-
     @Override
     protected void onResume() {
         super.onResume();
 
         setUserName();
     }
-
     private void setUserName() {
-        TextView MYTASKS = findViewById(R.id.Uname);
+        TextView MYTASKS=findViewById(R.id.Uname);
         // get text out of shared preference
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         // set text on text view address widget
-        MYTASKS.setText(sharedPreferences.getString(SettingsActivity.USERNAME, "No USERNAME Set"));
+     MYTASKS.setText(sharedPreferences.getString(SettingsActivity.USERNAME, "No USERNAME Set"));
     }
-
-    List<Task> taskBD = new ArrayList<>();
-
+    List<Task> taskBD= new ArrayList<>();
     @Override
     protected void onStart() {
         super.onStart();
@@ -156,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
         ViewAdapter customRecyclerViewAdapter = new ViewAdapter(
                 taskBD, position -> {
 
-            Intent TaskDeatles = new Intent(getApplicationContext(), TaskDetailActivity.class);
+            Intent TaskDeatles=new Intent(getApplicationContext(),TaskDetailActivity.class);
             TaskDeatles.putExtra("Titel", taskBD.get(position).getTitle());
             TaskDeatles.putExtra("description", taskBD.get(position).getDescription());
             TaskDeatles.putExtra("states", taskBD.get(position).getStatus());
@@ -164,7 +161,7 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(
                     MainActivity.this,
 
-                    "The Task  => " + taskBD.get(position).getTitle() + " clicked", Toast.LENGTH_SHORT).show();
+                    "The Task  => " + taskBD.get(position).getTitle()+" clicked", Toast.LENGTH_SHORT).show();
 
 
         });
@@ -176,10 +173,12 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
-
     private void getAndSowData() {
 
         configureAmplify();
+
+
+
 
 
         Amplify.API.query(
@@ -187,12 +186,18 @@ public class MainActivity extends AppCompatActivity {
                 response -> {
                     for (Task task : response.getData()) {
                         taskBD.add(task);
-                        Log.i(task.getTitle() + " NoTask SESS", "Query");
+                        Log.i(task.getTitle()+ " NoTask SESS", "Query");
                     }
+                    Bundle bundle = new Bundle();
 
+
+                    Message message = new Message();
+                    message.setData(bundle);
+;
                 },
                 error -> Log.e("MyAmplifyApp", "Query failure", error)
         );
+
 
 
         Amplify.DataStore.observe(Task.class,
@@ -208,6 +213,7 @@ public class MainActivity extends AppCompatActivity {
                     Message message = new Message();
                     message.setData(bundle);
 
+//                    handler.sendMessage(message);
                 },
                 failure -> Log.e(TAG, "Observation failed.", failure),
                 () -> Log.i(TAG, "Observation complete.")
