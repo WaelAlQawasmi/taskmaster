@@ -1,5 +1,7 @@
 package com.example.taskmaster;
 
+import static android.content.ContentValues.TAG;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
@@ -9,12 +11,29 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
+import androidx.appcompat.app.AppCompatActivity;
 
+import android.os.Bundle;
+import android.util.Log;
+
+import com.amplifyframework.AmplifyException;
+import com.amplifyframework.api.aws.AWSApiPlugin;
+import com.amplifyframework.api.graphql.model.ModelMutation;
+import com.amplifyframework.api.graphql.model.ModelQuery;
+import com.amplifyframework.core.Amplify;
+import com.amplifyframework.datastore.AWSDataStorePlugin;
+import com.amplifyframework.datastore.generated.model.Task;
 public class AddTask extends AppCompatActivity {
     String[] states = { "new","assigned", "in progress", "complete"};
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+// CALL CONFIGER CLASS
+        configureAmplify();
+
+
+
+
         setContentView(R.layout.activity_main2);
         Button myTasks = findViewById(R.id.submit);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -35,15 +54,63 @@ public class AddTask extends AppCompatActivity {
             EditText body = findViewById(R.id.body);
             String bodyName  =body.getText().toString();
 
-            Task task = new Task(titleName,bodyName,selected);
-            Long newStudentId = TasksDatabase.getInstance(getApplicationContext()).TasksDea().insertStudent(task);
 
-            Context context = getApplicationContext();
-            CharSequence text = "submit!"+newStudentId+selected;
+            //AWS OBJECT
+            Task item = Task.builder()
+                    .title(titleName)
+                    .description(bodyName)
+                    .status(selected)
+                    .build();
+
+            // Data store save
+            Amplify.DataStore.save(item,
+                    success -> Log.i(TAG, "Saved item: " + success.item().getTitle()),
+                    error -> Log.e(TAG, "Could not save item to DataStore", error)
+            );
+
+            // Data store query
+        Amplify.DataStore.query(Task.class,
+                tasks -> {
+                    while (tasks.hasNext()) {
+                        Task task = tasks.next();
+
+                        Log.i(TAG, "==== Task ====");
+                        Log.i(TAG, "Name: " + task.getTitle());
+                    }
+                },
+                failure -> Log.e(TAG, "Could not query DataStore", failure)
+        );
+
+            // API save to backend
+        Amplify.API.mutate(
+                ModelMutation.create(item),
+                success -> Log.i(TAG, "Saved itemApi: " + success.getData().getTitle()),
+                error -> Log.e(TAG, "Could not save item to API", error)
+        );
+
+
+            //ROOM
+//
+//            Task task = new Task(titleName,bodyName,selected);
+//            Long newStudentId = TasksDatabase.getInstance(getApplicationContext()).TasksDea().insertStudent(task);
+//
+           Context context = getApplicationContext();
+         CharSequence text = "submit! "+titleName+" "+selected;
             int duration = Toast.LENGTH_SHORT;
             Toast toast = Toast.makeText(context, text, duration);
             toast.show();
 
         });
+    }
+    private void configureAmplify() {
+        try {
+            Amplify.addPlugin(new AWSApiPlugin());
+            Amplify.addPlugin(new AWSDataStorePlugin());
+            Amplify.configure(getApplicationContext());
+
+            Log.i(TAG, "Initialized Amplify");
+        } catch (AmplifyException e) {
+            Log.e(TAG, "Could not initialize Amplify", e);
+        }
     }
 }

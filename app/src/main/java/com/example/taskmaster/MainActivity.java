@@ -1,5 +1,7 @@
 package com.example.taskmaster;
 
+import static android.content.ContentValues.TAG;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -8,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Message;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
@@ -18,13 +21,21 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.amplifyframework.AmplifyException;
+import com.amplifyframework.api.aws.AWSApiPlugin;
+import com.amplifyframework.api.graphql.model.ModelQuery;
+import com.amplifyframework.core.Amplify;
+import com.amplifyframework.datastore.AWSDataStorePlugin;
+import com.amplifyframework.datastore.generated.model.Task;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity  {
+
+
     private static final String TAG ="RES" ;
     //List<Task> tasksDetales = new ArrayList<>();
-
     private final View.OnClickListener mClickMeButtonListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -42,6 +53,7 @@ public class MainActivity extends AppCompatActivity  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        getAndSowData();
         Button AddtaskButton = findViewById(R.id.Addtask);
         Button myTasks = findViewById(R.id.MyTasks);
 
@@ -107,29 +119,32 @@ public class MainActivity extends AppCompatActivity  {
         // set text on text view address widget
      MYTASKS.setText(sharedPreferences.getString(SettingsActivity.USERNAME, "No USERNAME Set"));
     }
-
+    List<Task> taskBD= new ArrayList<>();
     @Override
     protected void onStart() {
         super.onStart();
 
-        List<Task> tasksDetales= TasksDatabase.getInstance(getApplicationContext()).TasksDea().getAll();
+// CALL CONFIGER CLASS
+        configureAmplify();
+
+        getAndSowData();
 
         //just type on start
         RecyclerView recyclerView = findViewById(R.id.recycle_view);
 
         // create an adapter
         ViewAdapter customRecyclerViewAdapter = new ViewAdapter(
-                tasksDetales, position -> {
+                taskBD, position -> {
 
             Intent TaskDeatles=new Intent(getApplicationContext(),TaskDetailActivity.class);
-            TaskDeatles.putExtra("Titel", tasksDetales.get(position).getTitle());
-            TaskDeatles.putExtra("description", tasksDetales.get(position).getBody());
-            TaskDeatles.putExtra("states", tasksDetales.get(position).getState());
+            TaskDeatles.putExtra("Titel", taskBD.get(position).getTitle());
+            TaskDeatles.putExtra("description", taskBD.get(position).getDescription());
+            TaskDeatles.putExtra("states", taskBD.get(position).getStatus());
             startActivity(TaskDeatles);
             Toast.makeText(
                     MainActivity.this,
 
-                    "The Task  => " + tasksDetales.get(position).getTitle()+" clicked", Toast.LENGTH_SHORT).show();
+                    "The Task  => " + taskBD.get(position).getTitle()+" clicked", Toast.LENGTH_SHORT).show();
 
 
         });
@@ -140,5 +155,41 @@ public class MainActivity extends AppCompatActivity  {
         // set other important properties
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+    }
+    private void getAndSowData() {
+
+        configureAmplify();
+
+        Amplify.API.query(
+                ModelQuery.list(Task.class),
+                response -> {
+                    for (Task task : response.getData()) {
+                        taskBD.add(task);
+                        Log.i(task.getTitle()+ " NoTask SESS", "Query");
+                    }
+                    Bundle bundle = new Bundle();
+
+
+                    Message message = new Message();
+                    message.setData(bundle);
+;
+                },
+                error -> Log.e("MyAmplifyApp", "Query failure", error)
+        );
+
+
+    }
+
+
+    private void configureAmplify() {
+        try {
+            Amplify.addPlugin(new AWSApiPlugin());
+            Amplify.addPlugin(new AWSDataStorePlugin());
+            Amplify.configure(getApplicationContext());
+
+            Log.i(TAG, "Initialized Amplify");
+        } catch (AmplifyException e) {
+            Log.e(TAG, "Could not initialize Amplify", e);
+        }
     }
 }

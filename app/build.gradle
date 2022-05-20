@@ -28,6 +28,8 @@ android {
 }
 
 dependencies {
+    implementation 'com.amplifyframework:aws-api:1.35.3'
+    implementation 'com.amplifyframework:aws-datastore:1.35.3'
     implementation 'androidx.appcompat:appcompat:1.4.1'
     implementation 'com.google.android.material:material:1.6.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.3'

@@ -24,3 +24,7 @@ you can see all tasks and you can acess to any task you need the see the titles
 ### Task deletes 
 where the user can acces to it from home page
 ![image description](screenshots/task_d.png)
+
+###connect to AWS  DynamoDB 
+
+the app conected with DynamoDB  to store and retrieve data from it
