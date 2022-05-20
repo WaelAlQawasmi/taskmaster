@@ -9,16 +9,18 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.amplifyframework.datastore.generated.model.Task;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class ViewAdapter  extends RecyclerView.Adapter<ViewAdapter.TaskViewHolder>{
 
     CustomClickListener listener;
-    List<Task> dataList;
+    List<com.amplifyframework.datastore.generated.model.Task> dataList;
 
-    public ViewAdapter(List<Task> dataList, CustomClickListener listener) {
-        this.dataList = dataList;
+    public ViewAdapter(List<com.amplifyframework.datastore.generated.model.Task> data, CustomClickListener listener) {
+        this.dataList = data;
         this.listener = listener;
     }
 
@@ -77,10 +79,10 @@ public class ViewAdapter  extends RecyclerView.Adapter<ViewAdapter.TaskViewHolde
     }
     @Override
     public void onBindViewHolder(@NonNull TaskViewHolder holder, int position) {
-        Log.i("tilt",dataList.get(position).getBody());
+        Log.i("tilt",dataList.get(position).getTitle());
          holder.titel.setText(dataList.get(position).getTitle());
-        holder.body.setText(dataList.get(position).getBody());
-        holder.state.setText(dataList.get(position).getState());
+        holder.body.setText(dataList.get(position).getDescription());
+        holder.state.setText(dataList.get(position).getStatus());
     }
     public interface CustomClickListener {
         void onTaskClicked(int position);
