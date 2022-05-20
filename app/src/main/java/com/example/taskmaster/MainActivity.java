@@ -10,6 +10,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -34,8 +36,13 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity  {
 
 
-    private static final String TAG ="RES" ;
+    //private static final String TAG ="RES" ;
     //List<Task> tasksDetales = new ArrayList<>();
+    public static final String TAG = MainActivity.class.getSimpleName();
+    public static final String TASK_ID = "taskId";
+    public static final String DATA = "data";
+
+    private Handler handler;
     private final View.OnClickListener mClickMeButtonListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -65,6 +72,15 @@ public class MainActivity extends AppCompatActivity  {
 
         });
 
+
+
+        handler = new Handler(Looper.getMainLooper(), msg -> {
+            String data = msg.getData().getString(DATA);
+            String taskId = msg.getData().getString(TASK_ID);
+          Toast.makeText(this, "The Toast Works => " + data, Toast.LENGTH_SHORT).show();
+            Log.i( " NoTask SESS", "Query");
+            return true;
+        });
 
 
         AddtaskButton.setOnClickListener(mClickMeButtonListener);
@@ -129,6 +145,7 @@ public class MainActivity extends AppCompatActivity  {
 
         getAndSowData();
 
+
         //just type on start
         RecyclerView recyclerView = findViewById(R.id.recycle_view);
 
@@ -160,6 +177,10 @@ public class MainActivity extends AppCompatActivity  {
 
         configureAmplify();
 
+
+
+
+
         Amplify.API.query(
                 ModelQuery.list(Task.class),
                 response -> {
@@ -175,6 +196,27 @@ public class MainActivity extends AppCompatActivity  {
 ;
                 },
                 error -> Log.e("MyAmplifyApp", "Query failure", error)
+        );
+
+
+
+        Amplify.DataStore.observe(Task.class,
+                started -> {
+                    Log.i(TAG, "Observation began.");
+                },
+                change -> {
+                    Log.i(TAG, change.item().toString());
+
+                    Bundle bundle = new Bundle();
+                    bundle.putString(DATA, change.item().toString());
+
+                    Message message = new Message();
+                    message.setData(bundle);
+
+//                    handler.sendMessage(message);
+                },
+                failure -> Log.e(TAG, "Observation failed.", failure),
+                () -> Log.i(TAG, "Observation complete.")
         );
 
 
