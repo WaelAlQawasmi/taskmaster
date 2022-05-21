@@ -25,10 +25,12 @@ import android.widget.Toast;
 
 import com.amplifyframework.AmplifyException;
 import com.amplifyframework.api.aws.AWSApiPlugin;
+import com.amplifyframework.api.graphql.model.ModelMutation;
 import com.amplifyframework.api.graphql.model.ModelQuery;
 import com.amplifyframework.core.Amplify;
 import com.amplifyframework.datastore.AWSDataStorePlugin;
 import com.amplifyframework.datastore.generated.model.Task;
+import com.amplifyframework.datastore.generated.model.Team;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,6 +62,7 @@ public class MainActivity extends AppCompatActivity  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         getAndSowData();
         Button AddtaskButton = findViewById(R.id.Addtask);
         Button myTasks = findViewById(R.id.MyTasks);
@@ -81,13 +84,39 @@ public class MainActivity extends AppCompatActivity  {
             Log.i( " NoTask SESS", "Query");
             return true;
         });
-
+//        addteams("team1");
+//        addteams("team2");
+//        addteams("team3");
 
         AddtaskButton.setOnClickListener(mClickMeButtonListener);
 
 
 
     }
+
+    private void addteams(String name){
+         Team team = Team.builder()
+                .name(name)
+                .build();
+
+        // Data store save
+        Amplify.DataStore.save(team,
+                successTeam -> {
+                    Log.i(TAG, "Saved task: " + successTeam.item().getName());
+
+                },
+                error -> Log.e(TAG, "Could not save task to DataStore", error)
+        );
+
+//        Amplify.API.mutate(
+//                ModelMutation.create(team),
+//                success -> Log.i(TAG, "Saved itemApi: " + success.getData().getName()),
+//                error -> Log.e(TAG, "Could not save item to API", error)
+//        );
+    }
+
+
+
 
 //    private void initialiseData() {
 //        tasksDetales.add(new Task("TASK 1", "GO TO", "COMPLETE"));

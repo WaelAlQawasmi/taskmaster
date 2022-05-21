@@ -422,7 +422,7 @@
                         "deprecationReason": null
                     },
                     {
-                        "name": "title",
+                        "name": "name",
                         "description": null,
                         "args": [],
                         "type": {
@@ -1417,7 +1417,7 @@
                         "defaultValue": null
                     },
                     {
-                        "name": "title",
+                        "name": "name",
                         "description": null,
                         "type": {
                             "kind": "INPUT_OBJECT",
@@ -2128,7 +2128,7 @@
                         "defaultValue": null
                     },
                     {
-                        "name": "title",
+                        "name": "name",
                         "description": null,
                         "type": {
                             "kind": "NON_NULL",
@@ -2163,7 +2163,7 @@
                 "fields": null,
                 "inputFields": [
                     {
-                        "name": "title",
+                        "name": "name",
                         "description": null,
                         "type": {
                             "kind": "INPUT_OBJECT",
@@ -2236,7 +2236,7 @@
                         "defaultValue": null
                     },
                     {
-                        "name": "title",
+                        "name": "name",
                         "description": null,
                         "type": {
                             "kind": "SCALAR",

@@ -5,7 +5,7 @@ mutation CreateTeam(
 ) {
   createTeam(input: $input, condition: $condition) {
     id
-    title
+    name
     task {
       items {
         id
@@ -35,7 +35,7 @@ mutation UpdateTeam(
 ) {
   updateTeam(input: $input, condition: $condition) {
     id
-    title
+    name
     task {
       items {
         id
@@ -65,7 +65,7 @@ mutation DeleteTeam(
 ) {
   deleteTeam(input: $input, condition: $condition) {
     id
-    title
+    name
     task {
       items {
         id

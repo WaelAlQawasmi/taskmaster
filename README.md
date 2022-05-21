@@ -15,7 +15,7 @@ where can the user set the username
 ![image description](screenshots/seting.png)
 ### Add a Task
 On the “Add a Task” page, allow users to type in details about a new task, specifically a title and a body. When users click the “submit” button, show a “submitted!” label on the page.
-![image description](screenshots/ander3.png)
+![image description](screenshots/addtask.png)
 
 ### All Tasks
 

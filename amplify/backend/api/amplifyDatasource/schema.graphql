@@ -2,7 +2,7 @@ input AMPLIFY { globalAuthRule: AuthRule = { allow: public } }
 
 type Team @model {
   id: ID!
-  title: String!
+  name: String!
   task: [Task] @hasMany
 }
 

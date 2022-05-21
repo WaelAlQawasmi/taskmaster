@@ -2,7 +2,7 @@
 query GetTeam($id: ID!) {
   getTeam(id: $id) {
     id
-    title
+    name
     task {
       items {
         id
@@ -34,7 +34,7 @@ query ListTeams(
   listTeams(filter: $filter, limit: $limit, nextToken: $nextToken) {
     items {
       id
-      title
+      name
       task {
         nextToken
         startedAt
@@ -63,7 +63,7 @@ query SyncTeams(
   ) {
     items {
       id
-      title
+      name
       task {
         nextToken
         startedAt

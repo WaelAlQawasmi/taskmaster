@@ -22,9 +22,9 @@ import static com.amplifyframework.core.model.query.predicate.QueryField.field;
 @ModelConfig(pluralName = "Teams")
 public final class Team implements Model {
   public static final QueryField ID = field("Team", "id");
-  public static final QueryField TITLE = field("Team", "title");
+  public static final QueryField NAME = field("Team", "name");
   private final @ModelField(targetType="ID", isRequired = true) String id;
-  private final @ModelField(targetType="String", isRequired = true) String title;
+  private final @ModelField(targetType="String", isRequired = true) String name;
   private final @ModelField(targetType="Task") @HasMany(associatedWith = "teamTaskId", type = Task.class) List<Task> task = null;
   private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime createdAt;
   private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime updatedAt;
@@ -32,8 +32,8 @@ public final class Team implements Model {
       return id;
   }
   
-  public String getTitle() {
-      return title;
+  public String getName() {
+      return name;
   }
   
   public List<Task> getTask() {
@@ -48,9 +48,9 @@ public final class Team implements Model {
       return updatedAt;
   }
   
-  private Team(String id, String title) {
+  private Team(String id, String name) {
     this.id = id;
-    this.title = title;
+    this.name = name;
   }
   
   @Override
@@ -62,7 +62,7 @@ public final class Team implements Model {
       } else {
       Team team = (Team) obj;
       return ObjectsCompat.equals(getId(), team.getId()) &&
-              ObjectsCompat.equals(getTitle(), team.getTitle()) &&
+              ObjectsCompat.equals(getName(), team.getName()) &&
               ObjectsCompat.equals(getCreatedAt(), team.getCreatedAt()) &&
               ObjectsCompat.equals(getUpdatedAt(), team.getUpdatedAt());
       }
@@ -72,7 +72,7 @@ public final class Team implements Model {
    public int hashCode() {
     return new StringBuilder()
       .append(getId())
-      .append(getTitle())
+      .append(getName())
       .append(getCreatedAt())
       .append(getUpdatedAt())
       .toString()
@@ -84,14 +84,14 @@ public final class Team implements Model {
     return new StringBuilder()
       .append("Team {")
       .append("id=" + String.valueOf(getId()) + ", ")
-      .append("title=" + String.valueOf(getTitle()) + ", ")
+      .append("name=" + String.valueOf(getName()) + ", ")
       .append("createdAt=" + String.valueOf(getCreatedAt()) + ", ")
       .append("updatedAt=" + String.valueOf(getUpdatedAt()))
       .append("}")
       .toString();
   }
   
-  public static TitleStep builder() {
+  public static NameStep builder() {
       return new Builder();
   }
   
@@ -112,10 +112,10 @@ public final class Team implements Model {
   
   public CopyOfBuilder copyOfBuilder() {
     return new CopyOfBuilder(id,
-      title);
+      name);
   }
-  public interface TitleStep {
-    BuildStep title(String title);
+  public interface NameStep {
+    BuildStep name(String name);
   }
   
 
@@ -125,22 +125,22 @@ public final class Team implements Model {
   }
   
 
-  public static class Builder implements TitleStep, BuildStep {
+  public static class Builder implements NameStep, BuildStep {
     private String id;
-    private String title;
+    private String name;
     @Override
      public Team build() {
         String id = this.id != null ? this.id : UUID.randomUUID().toString();
         
         return new Team(
           id,
-          title);
+          name);
     }
     
     @Override
-     public BuildStep title(String title) {
-        Objects.requireNonNull(title);
-        this.title = title;
+     public BuildStep name(String name) {
+        Objects.requireNonNull(name);
+        this.name = name;
         return this;
     }
     
@@ -156,14 +156,14 @@ public final class Team implements Model {
   
 
   public final class CopyOfBuilder extends Builder {
-    private CopyOfBuilder(String id, String title) {
+    private CopyOfBuilder(String id, String name) {
       super.id(id);
-      super.title(title);
+      super.name(name);
     }
     
     @Override
-     public CopyOfBuilder title(String title) {
-      return (CopyOfBuilder) super.title(title);
+     public CopyOfBuilder name(String name) {
+      return (CopyOfBuilder) super.name(name);
     }
   }
   

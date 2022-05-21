@@ -13,21 +13,22 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.os.Bundle;
 import android.util.Log;
 
 import com.amplifyframework.AmplifyException;
 import com.amplifyframework.api.aws.AWSApiPlugin;
-import com.amplifyframework.api.graphql.model.ModelMutation;
 import com.amplifyframework.api.graphql.model.ModelQuery;
 import com.amplifyframework.core.Amplify;
 import com.amplifyframework.datastore.AWSDataStorePlugin;
 import com.amplifyframework.datastore.generated.model.Task;
+import com.amplifyframework.datastore.generated.model.Team;
+
+import java.util.HashMap;
 
 public class AddTask extends AppCompatActivity {
     String[] states = {"new", "assigned", "in progress", "complete"};
+    String[] teamsName = {"team1","team2","team3"};
+    HashMap<String, String> teams =new HashMap<String, String>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,19 +37,56 @@ public class AddTask extends AppCompatActivity {
         configureAmplify();
 
 
+        Amplify.API.query(
+                ModelQuery.list(Team.class),
+                response -> {
+                    int i=0;
+
+                    for (Team team : response.getData()) {
+                        this.teams.put(team.getName(),team.getId());
+
+                        Bundle bundle = new Bundle();
+                        Message message = new Message();
+                        message.setData(bundle);
+
+                        Log.i(team.getName()+ " NoTask SESS", "Query");
+                    }
+
+
+
+                },
+                error -> Log.e("MyAmplifyApp", "Query failure", error)
+        );
+
+
+
+
+
         setContentView(R.layout.activity_main2);
         Button myTasks = findViewById(R.id.submit);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         Spinner spin = (Spinner) findViewById(R.id.spinner);
+        Spinner spinTems = (Spinner) findViewById(R.id.teams);
+
 
         ArrayAdapter aa = new ArrayAdapter(this, android.R.layout.simple_spinner_item, states);
         aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spin.setAdapter(aa);
+
+
+        ArrayAdapter teamAdpter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, teamsName);
+        teamAdpter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinTems.setAdapter(teamAdpter);
+
+
         myTasks.setOnClickListener(view -> {
 
 
             Spinner mySpinner = (Spinner) findViewById(R.id.spinner);
             String selected = mySpinner.getSelectedItem().toString();
+
+            Spinner mySpinnerTEAM = (Spinner) findViewById(R.id.teams);
+            String selectedTeams = mySpinnerTEAM.getSelectedItem().toString();
 
             EditText title = findViewById(R.id.title);
             String titleName = title.getText().toString();
@@ -62,6 +100,7 @@ public class AddTask extends AppCompatActivity {
                     .title(titleName)
                     .description(bodyName)
                     .status(selected)
+           .teamTaskId(teams.get(selectedTeams))
                     .build();
 
             // Data store save
@@ -98,11 +137,11 @@ public class AddTask extends AppCompatActivity {
 
 
             // API save to backend
-            Amplify.API.mutate(
-                    ModelMutation.create(item),
-                    success -> Log.i(TAG, "Saved itemApi: " + success.getData().getTitle()),
-                    error -> Log.e(TAG, "Could not save item to API", error)
-            );
+//            Amplify.API.mutate(
+//                    ModelMutation.create(item),
+//                    success -> Log.i(TAG, "Saved itemApi: " + success.getData().getTitle()),
+//                    error -> Log.e(TAG, "Could not save item to API", error)
+//            );
 
 
             //ROOM
@@ -117,6 +156,11 @@ public class AddTask extends AppCompatActivity {
             toast.show();
 
         });
+
+
+
+
+
     }
 
     private void configureAmplify() {
