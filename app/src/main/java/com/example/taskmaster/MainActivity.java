@@ -37,9 +37,6 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity  {
 
-
-    //private static final String TAG ="RES" ;
-    //List<Task> tasksDetales = new ArrayList<>();
     public static final String TAG = MainActivity.class.getSimpleName();
     public static final String TASK_ID = "taskId";
     public static final String DATA = "data";
@@ -61,9 +58,15 @@ public class MainActivity extends AppCompatActivity  {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        // TO SET USERNAME
+        setUserName();
+        // TO configureAmplify
 
-
+        configureAmplify();
+        // TO QUERY DATA
         getAndSowData();
+
+
         Button AddtaskButton = findViewById(R.id.Addtask);
         Button myTasks = findViewById(R.id.MyTasks);
 
@@ -80,10 +83,12 @@ public class MainActivity extends AppCompatActivity  {
         handler = new Handler(Looper.getMainLooper(), msg -> {
             String data = msg.getData().getString(DATA);
             String taskId = msg.getData().getString(TASK_ID);
-          Toast.makeText(this, "The Toast Works => " + data, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "The Toast Works => " + data, Toast.LENGTH_SHORT).show();
             Log.i( " NoTask SESS", "Query");
             return true;
         });
+
+
 //        addteams("team1");
 //        addteams("team2");
 //        addteams("team3");
@@ -91,65 +96,14 @@ public class MainActivity extends AppCompatActivity  {
         AddtaskButton.setOnClickListener(mClickMeButtonListener);
 
 
-
-    }
-
-    private void addteams(String name){
-         Team team = Team.builder()
-                .name(name)
-                .build();
-
-        // Data store save
-        Amplify.DataStore.save(team,
-                successTeam -> {
-                    Log.i(TAG, "Saved task: " + successTeam.item().getName());
-
-                },
-                error -> Log.e(TAG, "Could not save task to DataStore", error)
-        );
-
-//        Amplify.API.mutate(
-//                ModelMutation.create(team),
-//                success -> Log.i(TAG, "Saved itemApi: " + success.getData().getName()),
-//                error -> Log.e(TAG, "Could not save item to API", error)
-//        );
     }
 
 
 
 
-//    private void initialiseData() {
-//        tasksDetales.add(new Task("TASK 1", "GO TO", "COMPLETE"));
-//        tasksDetales.add(new Task("TASK2", "GO 8TO", "assigned"));
-//        tasksDetales.add(new Task("TASK 3", "GO 2TO", "COMPLETE"));
-//
-//        tasksDetales.add(new Task("TASK 4", "GO 1TO", "COMPLETE"));
-//        tasksDetales.add(new Task("TASK 7", "GO 8TO", "assigned"));
-//        tasksDetales.add(new Task("TASK 52", "GO TO", " in progress"));
-//    }
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_settings:
 
-                navigateToSettings();
-                return true;
 
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
 
-    private void navigateToSettings() {
-
-    Intent settingsIntent = new Intent(this, SettingsActivity.class);
-   startActivity(settingsIntent);
-    }
     @Override
     protected void onResume() {
         super.onResume();
@@ -162,17 +116,65 @@ public class MainActivity extends AppCompatActivity  {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         // set text on text view address widget
-     MYTASKS.setText(sharedPreferences.getString(SettingsActivity.USERNAME, "No USERNAME Set"));
+        MYTASKS.setText(sharedPreferences.getString(SettingsActivity.USERNAME, "No USERNAME Set"));
     }
     List<Task> taskBD= new ArrayList<>();
     @Override
     protected void onStart() {
         super.onStart();
 
-// CALL CONFIGER CLASS
-        configureAmplify();
+
 
         getAndSowData();
+
+
+
+    }
+    private void getAndSowData() {
+
+
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+
+        Amplify.API.query(
+                ModelQuery.list(Task.class,Task.TEAM_TASK_ID.eq(sharedPreferences.getString(SettingsActivity.MYTEAM, "No USERNAME Set"))),
+                response -> {
+                    for (Task task : response.getData()) {
+                        taskBD.add(task);
+                        Log.i(task.getTitle()+ " NoTask SESS", "Query");
+                    }
+                    Bundle bundle = new Bundle();
+
+
+                    Message message = new Message();
+                    message.setData(bundle);
+                    ;
+                },
+                error -> Log.e("MyAmplifyApp", "Query failure", error)
+        );
+
+
+
+        Amplify.DataStore.observe(Task.class,
+                started -> {
+                    Log.i(TAG, "Observation began.");
+                },
+                change -> {
+                    Log.i(TAG, change.item().toString());
+
+                    Bundle bundle = new Bundle();
+                    bundle.putString(DATA, change.item().toString());
+
+                    Message message = new Message();
+                    message.setData(bundle);
+
+//                    handler.sendMessage(message);
+                },
+                failure -> Log.e(TAG, "Observation failed.", failure),
+                () -> Log.i(TAG, "Observation complete.")
+        );
+
 
 
         //just type on start
@@ -201,52 +203,6 @@ public class MainActivity extends AppCompatActivity  {
         // set other important properties
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-    }
-    private void getAndSowData() {
-
-        configureAmplify();
-
-
-
-
-
-        Amplify.API.query(
-                ModelQuery.list(Task.class),
-                response -> {
-                    for (Task task : response.getData()) {
-                        taskBD.add(task);
-                        Log.i(task.getTitle()+ " NoTask SESS", "Query");
-                    }
-                    Bundle bundle = new Bundle();
-
-
-                    Message message = new Message();
-                    message.setData(bundle);
-;
-                },
-                error -> Log.e("MyAmplifyApp", "Query failure", error)
-        );
-
-
-
-        Amplify.DataStore.observe(Task.class,
-                started -> {
-                    Log.i(TAG, "Observation began.");
-                },
-                change -> {
-                    Log.i(TAG, change.item().toString());
-
-                    Bundle bundle = new Bundle();
-                    bundle.putString(DATA, change.item().toString());
-
-                    Message message = new Message();
-                    message.setData(bundle);
-
-//                    handler.sendMessage(message);
-                },
-                failure -> Log.e(TAG, "Observation failed.", failure),
-                () -> Log.i(TAG, "Observation complete.")
-        );
 
 
     }
@@ -254,7 +210,9 @@ public class MainActivity extends AppCompatActivity  {
 
     private void configureAmplify() {
         try {
-            Amplify.addPlugin(new AWSApiPlugin());
+
+            setUserName();
+         Amplify.addPlugin(new AWSApiPlugin());
             Amplify.addPlugin(new AWSDataStorePlugin());
             Amplify.configure(getApplicationContext());
 
@@ -262,5 +220,69 @@ public class MainActivity extends AppCompatActivity  {
         } catch (AmplifyException e) {
             Log.e(TAG, "Could not initialize Amplify", e);
         }
+    }
+
+
+///////////////////////MENU//////////////////////
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+
+                navigateToSettings();
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+
+    private void navigateToSettings() {
+
+        Intent settingsIntent = new Intent(this, SettingsActivity.class);
+        startActivity(settingsIntent);}
+
+
+
+    ///////////////////////MENU   END//////////////////////
+
+
+    //    private void initialiseData() {
+//        tasksDetales.add(new Task("TASK 1", "GO TO", "COMPLETE"));
+//        tasksDetales.add(new Task("TASK2", "GO 8TO", "assigned"));
+//        tasksDetales.add(new Task("TASK 3", "GO 2TO", "COMPLETE"));
+//
+//        tasksDetales.add(new Task("TASK 4", "GO 1TO", "COMPLETE"));
+//        tasksDetales.add(new Task("TASK 7", "GO 8TO", "assigned"));
+//        tasksDetales.add(new Task("TASK 52", "GO TO", " in progress"));
+//    }
+
+
+
+    private void addteams(String name){
+        Team team = Team.builder()
+                .name(name)
+                .build();
+
+        // Data store save
+        Amplify.DataStore.save(team,
+                successTeam -> {
+                    Log.i(TAG, "Saved task: " + successTeam.item().getName());
+
+                },
+                error -> Log.e(TAG, "Could not save task to DataStore", error)
+        );
+
+//        Amplify.API.mutate(
+//                ModelMutation.create(team),
+//                success -> Log.i(TAG, "Saved itemApi: " + success.getData().getName()),
+//                error -> Log.e(TAG, "Could not save item to API", error)
+//        );
     }
 }
