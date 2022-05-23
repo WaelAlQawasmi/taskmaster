@@ -28,3 +28,7 @@ where the user can acces to it from home page
 ###connect to AWS  DynamoDB 
 
 the app conected with DynamoDB  to store and retrieve data from it
+
+## Final AAB
+
+[THE APK OF APP](amplify/app-debug.apk)
