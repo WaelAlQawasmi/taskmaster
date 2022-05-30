@@ -6,7 +6,10 @@
             android:title="settings"
             android:orderInCategory="100"
             app:showAsAction="never" />
-
+    <item android:id="@+id/logout"
+        android:title="logout"
+        android:orderInCategory="100"
+        app:showAsAction="never" />
 <!--        <item android:id="@+id/action_copyright"-->
 <!--            android:title="action_copyright"-->
 <!--            android:orderInCategory="200"-->

@@ -29,6 +29,17 @@ where the user can acces to it from home page
 
 the app conected with DynamoDB  to store and retrieve data from it
 
+
+## sign up
+- you can sign up in app the app connect with Amplify and Cognito to verify and sign up
+![THE APK OF APP](screenshots/signup.png)
+
+## login
+- login after signup
+![THE APK OF APP](screenshots/login.png)
+
 ## Final AAB
 
 [THE APK OF APP](amplify/app-debug.apk)
+
+

@@ -23,13 +23,12 @@ import com.amplifyframework.core.Amplify;
 
 public class signupActivity extends AppCompatActivity {
 
-
+    public static final String EMAIL = "email";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
-        signup();
         final EditText usernameEditText = findViewById(R.id.username);
         final EditText passwordEditText = findViewById(R.id.password);
         final Button signup_button = findViewById(R.id.signup_button);
@@ -47,54 +46,48 @@ public class signupActivity extends AppCompatActivity {
             startActivity(NavagatSignUp);
         });
 
-        TextWatcher afterTextChangedListener = new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                // ignore
-            }
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // ignore
-            }
 
-            @Override
-            public void afterTextChanged(Editable s) {
-                usernameEditText.getText().toString();
-                passwordEditText.getText().toString();
-
-            }
-        };
-        usernameEditText.addTextChangedListener(afterTextChangedListener);
-        passwordEditText.addTextChangedListener(afterTextChangedListener);
         passwordEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
 
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    usernameEditText.getText().toString();
-                    passwordEditText.getText().toString();
+                if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_SEND) {
+                    signup_button.setEnabled(true);
 
                 }
                 return false;
             }
         });
 
+
+
         signup_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                usernameEditText.getText().toString();
+            loadingProgressBar.setVisibility(View.VISIBLE);
+
+            signup(usernameEditText.getText().toString(),
+                    passwordEditText.getText().toString());
 
             }
         });
     }
 
-    public void signup(){
+    public void signup(String email,String password){
         AuthSignUpOptions options = AuthSignUpOptions.builder()
-                .userAttribute(AuthUserAttributeKey.email(), "wael@o.com")
+                .userAttribute(AuthUserAttributeKey.email(), email)
+                .userAttribute(AuthUserAttributeKey.nickname(), "wael k q")
                 .build();
-        Amplify.Auth.signUp("wael@o.com", "Password123", options,
-                result -> Log.i("AuthQuickStart", "Result: " + result.toString()),
+        Amplify.Auth.signUp(email, password, options,
+                result -> {Log.i("AuthQuickStart", "Result: " + result.toString());
+
+                    Intent intent = new Intent(signupActivity.this, VerificationActivity.class);
+                    intent.putExtra(EMAIL, email);
+                    startActivity(intent);
+
+                    finish();
+                },
                 error -> Log.e("AuthQuickStart", "Sign up failed", error)
         );
     }

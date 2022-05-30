@@ -13,25 +13,12 @@ public class AmplifiyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        configureAmplify();
+
 
     }
 
     private static final String TAG = AmplifiyApplication.class.getSimpleName();
 
-    private void configureAmplify() {
-        try {
-            Amplify.addPlugin(new AWSCognitoAuthPlugin());
 
-            // setUserName();
-            Amplify.addPlugin(new AWSApiPlugin());
-            Amplify.addPlugin(new AWSDataStorePlugin());
-            Amplify.configure(getApplicationContext());
-
-            Log.i(TAG, "Initialized Amplify");
-        } catch (AmplifyException e) {
-            Log.e(TAG, "Could not initialize Amplify", e);
-        }
-    }
 }
 
