@@ -1,6 +1,28 @@
 package com.example.taskmaster;
 
 import static android.content.ContentValues.TAG;
+import android.content.Intent;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.EditText;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.amplifyframework.AmplifyException;
+import com.amplifyframework.api.aws.AWSApiPlugin;
+import com.amplifyframework.api.graphql.model.ModelMutation;
+import com.amplifyframework.auth.cognito.AWSCognitoAuthPlugin;
+import com.amplifyframework.core.Amplify;
+import com.amplifyframework.datastore.AWSDataStorePlugin;
+import com.amplifyframework.datastore.generated.model.Note;
+import com.amplifyframework.datastore.generated.model.Task;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -61,10 +83,12 @@ public class MainActivity extends AppCompatActivity  {
         // TO SET USERNAME
         setUserName();
         // TO configureAmplify
-
         configureAmplify();
+        //configureAmplify();
         // TO QUERY DATA
         getAndSowData();
+
+        authSession("onCreate");
 
 
         Button AddtaskButton = findViewById(R.id.Addtask);
@@ -109,6 +133,8 @@ public class MainActivity extends AppCompatActivity  {
         super.onResume();
 
         setUserName();
+        authSession("onCreate");
+
     }
     private void setUserName() {
         TextView MYTASKS=findViewById(R.id.Uname);
@@ -140,16 +166,18 @@ public class MainActivity extends AppCompatActivity  {
         Amplify.API.query(
                 ModelQuery.list(Task.class,Task.TEAM_TASK_ID.eq(sharedPreferences.getString(SettingsActivity.MYTEAM, "No USERNAME Set"))),
                 response -> {
-                    for (Task task : response.getData()) {
-                        taskBD.add(task);
-                        Log.i(task.getTitle()+ " NoTask SESS", "Query");
+                    if(response.getData()!=null) {
+                        for (Task task : response.getData()) {
+                            taskBD.add(task);
+                            Log.i(task.getTitle() + " NoTask SESS", "Query");
+                        }
                     }
                     Bundle bundle = new Bundle();
 
 
                     Message message = new Message();
                     message.setData(bundle);
-                    ;
+
                 },
                 error -> Log.e("MyAmplifyApp", "Query failure", error)
         );
@@ -208,19 +236,7 @@ public class MainActivity extends AppCompatActivity  {
     }
 
 
-    private void configureAmplify() {
-        try {
 
-            setUserName();
-         Amplify.addPlugin(new AWSApiPlugin());
-            Amplify.addPlugin(new AWSDataStorePlugin());
-            Amplify.configure(getApplicationContext());
-
-            Log.i(TAG, "Initialized Amplify");
-        } catch (AmplifyException e) {
-            Log.e(TAG, "Could not initialize Amplify", e);
-        }
-    }
 
 
 ///////////////////////MENU//////////////////////
@@ -235,6 +251,11 @@ public class MainActivity extends AppCompatActivity  {
             case R.id.action_settings:
 
                 navigateToSettings();
+                return true;
+
+            case R.id.logout:
+
+                logout();
                 return true;
 
             default:
@@ -285,4 +306,42 @@ public class MainActivity extends AppCompatActivity  {
 //                error -> Log.e(TAG, "Could not save item to API", error)
 //        );
     }
+
+    private void authSession(String method) {
+        Amplify.Auth.fetchAuthSession(
+                result -> Log.i(TAG, "Auth Session => " + method + result.toString()),
+                error -> Log.e(TAG, error.toString())
+        );
+    }
+
+
+    private void logout() {
+        Amplify.Auth.signOut(
+                () -> {
+                    Log.i(TAG, "Signed out successfully");
+                    startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                    authSession("logout");
+                    finish();
+                },
+                error -> Log.e(TAG, error.toString())
+        );
+
+    }
+
+
+    public  void configureAmplify() {
+        try {
+            Amplify.addPlugin(new AWSCognitoAuthPlugin());
+            Amplify.addPlugin(new AWSApiPlugin());
+            Amplify.addPlugin(new AWSDataStorePlugin());
+            Amplify.configure(getApplicationContext());
+
+            Log.i(TAG, "Initialized Amplify");
+        } catch (AmplifyException e) {
+            Log.e(TAG, "Could not initialize Amplify", e);
+        }
+    }
+
 }
+
+

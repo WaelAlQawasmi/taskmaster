@@ -18,6 +18,7 @@ import android.util.Log;
 import com.amplifyframework.AmplifyException;
 import com.amplifyframework.api.aws.AWSApiPlugin;
 import com.amplifyframework.api.graphql.model.ModelQuery;
+import com.amplifyframework.auth.cognito.AWSCognitoAuthPlugin;
 import com.amplifyframework.core.Amplify;
 import com.amplifyframework.datastore.AWSDataStorePlugin;
 import com.amplifyframework.datastore.generated.model.Task;
@@ -41,7 +42,7 @@ public class AddTask extends AppCompatActivity {
                 ModelQuery.list(Team.class),
                 response -> {
                     int i=0;
-
+if( response.getData()!=null){
                     for (Team team : response.getData()) {
                         this.teams.put(team.getName(),team.getId());
 
@@ -50,7 +51,7 @@ public class AddTask extends AppCompatActivity {
                         message.setData(bundle);
 
                         Log.i(team.getName()+ " NoTask SESS", "Query");
-                    }
+                    }}
 
 
 
@@ -163,8 +164,9 @@ public class AddTask extends AppCompatActivity {
 
     }
 
-    private void configureAmplify() {
+    public  void configureAmplify() {
         try {
+            Amplify.addPlugin(new AWSCognitoAuthPlugin());
             Amplify.addPlugin(new AWSApiPlugin());
             Amplify.addPlugin(new AWSDataStorePlugin());
             Amplify.configure(getApplicationContext());
