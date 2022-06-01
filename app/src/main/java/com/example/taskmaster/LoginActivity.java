@@ -42,7 +42,6 @@ public class LoginActivity extends AppCompatActivity {
         final Button loginButton = findViewById(R.id.login);
         loadingProgressBar = findViewById(R.id.loading);
 
-        configureAmplify();
 
         signUpPrompt.setOnClickListener(view -> {
             Intent navigateToSignUpIntent = new Intent(this, signupActivity.class);
@@ -71,18 +70,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
 
-    public  void configureAmplify() {
-        try {
-            Amplify.addPlugin(new AWSCognitoAuthPlugin());
-            Amplify.addPlugin(new AWSApiPlugin());
-            Amplify.addPlugin(new AWSDataStorePlugin());
-            Amplify.configure(getApplicationContext());
 
-            Log.i(TAG, "Initialized Amplify");
-        } catch (AmplifyException e) {
-            Log.e(TAG, "Could not initialize Amplify", e);
-        }
-    }
 
     private void login(String email, String password) {
         Amplify.Auth.signIn(
@@ -95,6 +83,7 @@ public class LoginActivity extends AppCompatActivity {
                         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
                         SharedPreferences.Editor preferenceEditor = sharedPreferences.edit();
                         preferenceEditor.putString(USERNAME, email);
+                        preferenceEditor.apply();
                         Log.i(TAG,"Sign in succeededes" );
                         loadingProgressBar.setVisibility(View.INVISIBLE);
                         authSession("onCreate");

@@ -44,5 +44,12 @@
         ]
       }
     }
+  },
+  "storage": {
+    "s39060a184": {
+      "service": "S3",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": []
+    }
   }
 }

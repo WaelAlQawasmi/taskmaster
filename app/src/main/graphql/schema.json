@@ -619,6 +619,16 @@
                         "defaultValue": null
                     },
                     {
+                        "name": "imageurl",
+                        "description": null,
+                        "type": {
+                            "kind": "INPUT_OBJECT",
+                            "name": "ModelStringInput",
+                            "ofType": null
+                        },
+                        "defaultValue": null
+                    },
+                    {
                         "name": "status",
                         "description": null,
                         "type": {
@@ -1264,6 +1274,18 @@
                     },
                     {
                         "name": "description",
+                        "description": null,
+                        "args": [],
+                        "type": {
+                            "kind": "SCALAR",
+                            "name": "String",
+                            "ofType": null
+                        },
+                        "isDeprecated": false,
+                        "deprecationReason": null
+                    },
+                    {
+                        "name": "imageurl",
                         "description": null,
                         "args": [],
                         "type": {
@@ -2336,6 +2358,16 @@
                         "defaultValue": null
                     },
                     {
+                        "name": "imageurl",
+                        "description": null,
+                        "type": {
+                            "kind": "SCALAR",
+                            "name": "String",
+                            "ofType": null
+                        },
+                        "defaultValue": null
+                    },
+                    {
                         "name": "status",
                         "description": null,
                         "type": {
@@ -2388,6 +2420,16 @@
                     },
                     {
                         "name": "description",
+                        "description": null,
+                        "type": {
+                            "kind": "INPUT_OBJECT",
+                            "name": "ModelStringInput",
+                            "ofType": null
+                        },
+                        "defaultValue": null
+                    },
+                    {
+                        "name": "imageurl",
                         "description": null,
                         "type": {
                             "kind": "INPUT_OBJECT",
@@ -2491,6 +2533,16 @@
                     },
                     {
                         "name": "description",
+                        "description": null,
+                        "type": {
+                            "kind": "SCALAR",
+                            "name": "String",
+                            "ofType": null
+                        },
+                        "defaultValue": null
+                    },
+                    {
+                        "name": "imageurl",
                         "description": null,
                         "type": {
                             "kind": "SCALAR",

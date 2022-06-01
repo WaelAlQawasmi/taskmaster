@@ -8,6 +8,7 @@ query GetTeam($id: ID!) {
         id
         title
         description
+        imageurl
         status
         createdAt
         updatedAt
@@ -83,6 +84,7 @@ query GetTask($id: ID!) {
     id
     title
     description
+    imageurl
     status
     createdAt
     updatedAt
@@ -102,6 +104,7 @@ query ListTasks(
       id
       title
       description
+      imageurl
       status
       createdAt
       updatedAt
@@ -130,6 +133,7 @@ query SyncTasks(
       id
       title
       description
+      imageurl
       status
       createdAt
       updatedAt

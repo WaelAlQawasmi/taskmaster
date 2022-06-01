@@ -142,6 +142,7 @@ public class MainActivity extends AppCompatActivity  {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         // set text on text view address widget
+        MYTASKS.setText(sharedPreferences.getString(LoginActivity.USERNAME, "No USERNAME Set"));
         MYTASKS.setText(sharedPreferences.getString(SettingsActivity.USERNAME, "No USERNAME Set"));
     }
     List<Task> taskBD= new ArrayList<>();
@@ -216,6 +217,10 @@ public class MainActivity extends AppCompatActivity  {
             TaskDeatles.putExtra("Titel", taskBD.get(position).getTitle());
             TaskDeatles.putExtra("description", taskBD.get(position).getDescription());
             TaskDeatles.putExtra("states", taskBD.get(position).getStatus());
+
+    TaskDeatles.putExtra("imgurl", taskBD.get(position).getImageurl());
+
+            Log.i(TAG, "img url: " + taskBD.get(position).getImageurl());
             startActivity(TaskDeatles);
             Toast.makeText(
                     MainActivity.this,
