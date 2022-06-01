@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Message;
@@ -18,6 +19,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import android.util.Log;
@@ -41,44 +43,59 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashMap;
+import java.util.Random;
 
 public class AddTask extends AppCompatActivity {
     String[] states = {"new", "assigned", "in progress", "complete"};
-    String[] teamsName = {"team1","team2","team3"};
-    HashMap<String, String> teams =new HashMap<String, String>();
+    String[] teamsName = {"team1", "team2", "team3"};
+    HashMap<String, String> teams = new HashMap<String, String>();
     public static final int REQUEST_CODE = 123;
-    public static  String IMGurl=null ;
+    public static String IMGurl = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 // CALL CONFIGER CLASS
         configureAmplify();
+        Intent intent = getIntent();
+        String action = intent.getAction();
+        String type = intent.getType();
 
+        if (Intent.ACTION_SEND.equals(action) && type != null) {
+            if ("text/plain".equals(type)) {
+                handleSendText(intent); // Handle text being sent
+            } else if (type.startsWith("image/")) {
+                try {
+                    handleSendImage(intent); // Handle single image being sent
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        } else {
+            // Handle other intents, such as being started from the home screen
+        }
 
         Amplify.API.query(
                 ModelQuery.list(Team.class),
                 response -> {
-                    int i=0;
-if( response.getData()!=null){
-                    for (Team team : response.getData()) {
-                        this.teams.put(team.getName(),team.getId());
+                    int i = 0;
+                    if (response.getData() != null) {
+                        for (Team team : response.getData()) {
+                            this.teams.put(team.getName(), team.getId());
 
-                        Bundle bundle = new Bundle();
-                        Message message = new Message();
-                        message.setData(bundle);
+                            Bundle bundle = new Bundle();
+                            Message message = new Message();
+                            message.setData(bundle);
 
-                        Log.i(team.getName()+ " NoTask SESS", "Query");
-                    }}
-
+                            Log.i(team.getName() + " NoTask SESS", "Query");
+                        }
+                    }
 
 
                 },
                 error -> Log.e("MyAmplifyApp", "Query failure", error)
         );
-
-
-
 
 
         setContentView(R.layout.activity_main2);
@@ -98,9 +115,9 @@ if( response.getData()!=null){
         teamAdpter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinTems.setAdapter(teamAdpter);
 
- upload.setOnClickListener(view -> {
-   pictureUpload();
- });
+        upload.setOnClickListener(view -> {
+            pictureUpload();
+        });
 
 
         myTasks.setOnClickListener(view -> {
@@ -118,38 +135,36 @@ if( response.getData()!=null){
             EditText body = findViewById(R.id.body);
             String bodyName = body.getText().toString();
 
-if(IMGurl.equals(null)){
-    //AWS OBJECT
-    Task item = Task.builder()
-            .title(titleName)
-            .description(bodyName)
-            .status(selected)
-            .teamTaskId(teams.get(selectedTeams))
-            .build();
-    // Data store save
-    Amplify.DataStore.save(item,
-            success -> Log.i(TAG, "Saved item: " + success.item().getTitle()),
-            error -> Log.e(TAG, "Could not save item to DataStore", error)
-    );
+            if (IMGurl.equals(null)) {
+                //AWS OBJECT
+                Task item = Task.builder()
+                        .title(titleName)
+                        .description(bodyName)
+                        .status(selected)
+                        .teamTaskId(teams.get(selectedTeams))
+                        .build();
+                // Data store save
+                Amplify.DataStore.save(item,
+                        success -> Log.i(TAG, "Saved item: " + success.item().getTitle()),
+                        error -> Log.e(TAG, "Could not save item to DataStore", error)
+                );
 
-}
-else {
-    //AWS OBJECT
-    Task item = Task.builder()
-            .title(titleName)
-            .description(bodyName)
-            .status(selected)
-            .teamTaskId(teams.get(selectedTeams))
-            .imageurl(IMGurl)
-            .build();
-    // Data store save
-    Amplify.DataStore.save(item,
-            success -> Log.i(TAG, "Saved item: " + success.item().getTitle()),
-            error -> Log.e(TAG, "Could not save item to DataStore", error)
-    );
+            } else {
+                //AWS OBJECT
+                Task item = Task.builder()
+                        .title(titleName)
+                        .description(bodyName)
+                        .status(selected)
+                        .teamTaskId(teams.get(selectedTeams))
+                        .imageurl(IMGurl)
+                        .build();
+                // Data store save
+                Amplify.DataStore.save(item,
+                        success -> Log.i(TAG, "Saved item: " + success.item().getTitle()),
+                        error -> Log.e(TAG, "Could not save item to DataStore", error)
+                );
 
-}
-
+            }
 
 
             // Data store query
@@ -201,39 +216,47 @@ else {
         });
 
 
-
-
-
     }
 
-    private void uploadFile() {
-        File exampleFile = new File(getApplicationContext().getFilesDir(), "ExampleKey");
 
-        try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter(exampleFile));
-            writer.append("Example file contents");
-            writer.close();
-        } catch (Exception exception) {
-            Log.e("MyAmplifyApp", "Upload failed", exception);
+    void handleSendText(Intent intent) {
+        String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
+        if (sharedText != null) {
+
+        }
+    }
+
+    void handleSendImage(Intent intent) throws IOException {
+        Uri imageUri = (Uri) intent.getParcelableExtra(Intent.EXTRA_STREAM);
+        if (imageUri != null) {
+            Log.e(TAG, "Upload failed " + " noooo");
+            File file = BitMapHandler(imageUri, "hi.jpg");
+            uploadFile(file, "hi.jpg");
         }
 
-        Amplify.Storage.uploadFile(
-                "ExampleKey",
-                exampleFile,
-                result -> Log.i("MyAmplifyApp", "Successfully uploaded: " + result.getKey()),
-                storageFailure -> Log.e("MyAmplifyApp", "Upload failed", storageFailure)
-        );
     }
 
 
     private void pictureUpload() {
         // Launches photo picker in single-select mode.
         // This means that the user can select one photo or video.
+
         Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setType("image/*");
 
         startActivityForResult(intent, REQUEST_CODE);
     }
+
+    private File BitMapHandler(Uri currentUri, String titleName) throws IOException {
+        Bitmap bitmap = getBitmapFromUri(currentUri);
+
+        File file = new File(getApplicationContext().getFilesDir(), titleName + ".jpg");
+        OutputStream os = new BufferedOutputStream(new FileOutputStream(file));
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, os);
+        os.close();
+        return file;
+    }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -246,42 +269,53 @@ else {
             return;
         }
 
-        switch(requestCode) {
+        switch (requestCode) {
             case REQUEST_CODE:
                 // Get photo picker response for single select.
                 Uri currentUri = data.getData();
 
                 // Do stuff with the photo/video URI.
                 Log.i(TAG, "onActivityResult: the uri is => " + currentUri);
-
                 try {
-                    Bitmap bitmap = getBitmapFromUri(currentUri);
-
-                    File file = new File(getApplicationContext().getFilesDir(), titleName+".jpg");
-                    OutputStream os = new BufferedOutputStream(new FileOutputStream(file));
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, os);
-                    os.close();
-
-                    // upload to s3
-                    // uploads the file
-                    Amplify.Storage.uploadFile(
-                            titleName+".jpg",
-                            file,
-                            result -> {Log.i(TAG, "Successfully uploaded: " + result.getKey());
-                                IMGurl=result.getKey();},
-                            storageFailure -> Log.e(TAG, "Upload failed", storageFailure)
-                    );
+                    File file = BitMapHandler(currentUri, titleName);
+                    uploadFile(file, titleName);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+                // upload to s3
+                // uploads the file
+
                 return;
         }
     }
 
 
+    private void uploadFile(File file, String titleName) {
 
 
-    public  void configureAmplify() {
+        Log.e(TAG, "Upload failed " + titleName);
+        Amplify.Storage.uploadFile(
+                titleName + ".jpg",
+                file,
+                result -> {
+                    Log.i(TAG, "Successfully uploaded: " + result.getKey());
+                    IMGurl = result.getKey();
+                    changUploadBotonColor();
+                },
+                storageFailure -> Log.e(TAG, "Upload failed", storageFailure)
+
+        );
+
+    }
+
+    public void changUploadBotonColor() {
+        Button upload = findViewById(R.id.upload);
+        upload.setText("uploded!");
+        upload.setBackgroundColor(this.getResources().getColor(R.color.upload));
+    }
+
+
+    public void configureAmplify() {
         try {
             Amplify.addPlugin(new AWSS3StoragePlugin());
             Amplify.addPlugin(new AWSCognitoAuthPlugin());

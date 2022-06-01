@@ -39,6 +39,11 @@ the app conected with DynamoDB  to store and retrieve data from it
 - login after signup
 ![THE APK OF APP](screenshots/login.png)
 
+
+## SHEAR BY FILTER INTENT
+- lSHEAR photo
+  ![THE APK OF APP](screenshots/init.png)
+  ![THE APK OF APP](screenshots/init2.png)
 ## Final AAB
 
 [THE APK OF APP](amplify/app-debug.apk)
