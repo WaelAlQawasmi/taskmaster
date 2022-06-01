@@ -10,6 +10,7 @@ type Task @model {
   id: ID!
   title: String!
   description: String
+  imageurl:String
   status: String
 
 }

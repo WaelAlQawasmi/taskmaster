@@ -7,23 +7,24 @@ The main page  have  buttons of the page to allow going to the “add tasks” a
 and the taskes of the user
 
 ![image description](screenshots/home.png)
-### go to setting 
-you can go to setting from menu
-![image description](screenshots/main_s.png)
+### go to setting  and log out
+you can go to setting or logout from menu
+![image description](screenshots/settings.png)
 ### setting
 where can the user set the username
 ![image description](screenshots/seting.png)
 ### Add a Task
-On the “Add a Task” page, allow users to type in details about a new task, specifically a title and a body. When users click the “submit” button, show a “submitted!” label on the page.
-![image description](screenshots/addtask.png)
+- the user can add photo to task 
+- On the “Add a Task” page, allow users to type in details about a new task, specifically a title and a body. When users click the “submit” button, show a “submitted!” label on the page.
+![image description](screenshots/addTasks.png)
 
 ### All Tasks
 
 you can see all tasks and you can acess to any task you need the see the titles 
 ![image description](screenshots/allTasks.png)
 ### Task deletes 
-where the user can acces to it from home page
-![image description](screenshots/task_d.png)
+where the user can acces to it from home page and the user can see all data oof task   like the photo connect feom s3 AWS
+![image description](screenshots/task_detiles.png)
 
 ###connect to AWS  DynamoDB 
 

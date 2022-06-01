@@ -11,6 +11,7 @@ mutation CreateTeam(
         id
         title
         description
+        imageurl
         status
         createdAt
         updatedAt
@@ -41,6 +42,7 @@ mutation UpdateTeam(
         id
         title
         description
+        imageurl
         status
         createdAt
         updatedAt
@@ -71,6 +73,7 @@ mutation DeleteTeam(
         id
         title
         description
+        imageurl
         status
         createdAt
         updatedAt
@@ -97,6 +100,7 @@ mutation CreateTask(
     id
     title
     description
+    imageurl
     status
     createdAt
     updatedAt
@@ -114,6 +118,7 @@ mutation UpdateTask(
     id
     title
     description
+    imageurl
     status
     createdAt
     updatedAt
@@ -131,6 +136,7 @@ mutation DeleteTask(
     id
     title
     description
+    imageurl
     status
     createdAt
     updatedAt
