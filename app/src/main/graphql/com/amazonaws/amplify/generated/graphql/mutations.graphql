@@ -13,6 +13,7 @@ mutation CreateTeam(
         description
         imageurl
         status
+        location
         createdAt
         updatedAt
         _version
@@ -44,6 +45,7 @@ mutation UpdateTeam(
         description
         imageurl
         status
+        location
         createdAt
         updatedAt
         _version
@@ -75,6 +77,7 @@ mutation DeleteTeam(
         description
         imageurl
         status
+        location
         createdAt
         updatedAt
         _version
@@ -102,6 +105,7 @@ mutation CreateTask(
     description
     imageurl
     status
+    location
     createdAt
     updatedAt
     _version
@@ -120,6 +124,7 @@ mutation UpdateTask(
     description
     imageurl
     status
+    location
     createdAt
     updatedAt
     _version
@@ -138,6 +143,7 @@ mutation DeleteTask(
     description
     imageurl
     status
+    location
     createdAt
     updatedAt
     _version

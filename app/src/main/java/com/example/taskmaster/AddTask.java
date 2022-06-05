@@ -2,16 +2,22 @@ package com.example.taskmaster;
 
 import static android.content.ContentValues.TAG;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
+import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
 import android.os.ParcelFileDescriptor;
@@ -19,7 +25,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import android.util.Log;
@@ -34,16 +39,24 @@ import com.amplifyframework.datastore.generated.model.Task;
 import com.amplifyframework.datastore.generated.model.Team;
 import com.amplifyframework.storage.s3.AWSS3StoragePlugin;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
+
 import java.io.BufferedOutputStream;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Random;
 
 public class AddTask extends AppCompatActivity {
     String[] states = {"new", "assigned", "in progress", "complete"};
@@ -51,6 +64,30 @@ public class AddTask extends AppCompatActivity {
     HashMap<String, String> teams = new HashMap<String, String>();
     public static final int REQUEST_CODE = 123;
     public static String IMGurl = null;
+
+    private FusedLocationProviderClient fusedLocationClient;
+    private int PERMISSION_ID = 44;
+
+    private double latitude;
+    private double longitude;
+
+    private GoogleMap googleMap;
+
+    private Button toggle;
+
+    private final LocationCallback mLocationCallback = new LocationCallback() {
+
+        @Override
+        public void onLocationResult(LocationResult locationResult) {
+            Location mLastLocation = locationResult.getLastLocation();
+            LatLng coordinate = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+            googleMap.addMarker(new MarkerOptions()
+                    .position(coordinate)
+                    .title("Marker"));
+//            googleMap.moveCamera(CameraUpdateFactory.newLatLng(coordinate));
+            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(coordinate, 12.0f));
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +97,8 @@ public class AddTask extends AppCompatActivity {
         Intent intent = getIntent();
         String action = intent.getAction();
         String type = intent.getType();
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        fetchLastLocation();
 
         if (Intent.ACTION_SEND.equals(action) && type != null) {
             if ("text/plain".equals(type)) {
@@ -142,6 +181,7 @@ public class AddTask extends AppCompatActivity {
                         .description(bodyName)
                         .status(selected)
                         .teamTaskId(teams.get(selectedTeams))
+                        .location(theLocation)
                         .build();
                 // Data store save
                 Amplify.DataStore.save(item,
@@ -157,6 +197,7 @@ public class AddTask extends AppCompatActivity {
                         .status(selected)
                         .teamTaskId(teams.get(selectedTeams))
                         .imageurl(IMGurl)
+                        .location(theLocation)
                         .build();
                 // Data store save
                 Amplify.DataStore.save(item,
@@ -338,4 +379,107 @@ public class AddTask extends AppCompatActivity {
 
         return image;
     }
+
+
+    // method to check for permissions
+    private boolean checkPermissions() {
+        return ActivityCompat
+                .checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) ==
+                PackageManager.PERMISSION_GRANTED
+                &&
+                ActivityCompat
+                        .checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) ==
+                        PackageManager.PERMISSION_GRANTED;
+
+        // If we want background location
+        // on Android 10.0 and higher,
+        // use:
+        // ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_BACKGROUND_LOCATION) == PackageManager.PERMISSION_GRANTED
+    }
+
+    // method to request for permissions
+    private void requestPermissions() {
+        ActivityCompat.requestPermissions(this, new String[]{
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_ID);
+    }
+
+    // method to check
+    // if location is enabled
+    private boolean isLocationEnabled() {
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
+                locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+    }
+
+    // If everything is alright then
+
+//https://stackoverflow.com/questions/25483352/how-to-get-last-known-location-for-location-manager-in-android
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case 123: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
+                    // permission was denied, show alert to explain permission
+                    askPermission();
+                } else {
+                    //permission is granted now start a background service
+                    if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                            && ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                        fetchLastLocation();
+                    }
+                }
+            }
+        }
+    }
+
+    private void askPermission(){
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, 123);
+        }
+    }
+
+   private String theLocation;
+
+    private String fetchLastLocation() {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    Activity#requestPermissions
+
+                askPermission();
+
+            }
+        }
+        fusedLocationClient.getLastLocation()
+                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location location) {
+                        // Got last known location. In some rare situations this can be null.
+                        if (location != null) {
+                            // Logic to handle location object
+
+                           String X=  location.getLatitude()+","+ location.getLongitude();
+                            locationhandler(X);
+                         //   Log.e("LAS2T LOCATION: ", X);
+
+
+                        }
+                    }
+                });
+
+
+
+        return null;
+    }
+     private void locationhandler(String X){
+        this.theLocation=X;
+         Log.e("LASp8T LOCATION: ", this.theLocation);
+     }
+
+
 }

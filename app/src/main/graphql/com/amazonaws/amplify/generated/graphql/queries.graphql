@@ -10,6 +10,7 @@ query GetTeam($id: ID!) {
         description
         imageurl
         status
+        location
         createdAt
         updatedAt
         _version
@@ -86,6 +87,7 @@ query GetTask($id: ID!) {
     description
     imageurl
     status
+    location
     createdAt
     updatedAt
     _version
@@ -106,6 +108,7 @@ query ListTasks(
       description
       imageurl
       status
+      location
       createdAt
       updatedAt
       _version
@@ -135,6 +138,7 @@ query SyncTasks(
       description
       imageurl
       status
+      location
       createdAt
       updatedAt
       _version
