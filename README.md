@@ -49,7 +49,7 @@ the app conected with DynamoDB  to store and retrieve data from it
 - Ask permission
   ![THE APK OF APP](screenshots/askLocation.png)
 -  Show location
-  ![THE APK OF APP](screenshots/init2.png)
+  ![THE APK OF APP](screenshots/location.png)
 ## Final AAB
 
 [THE APK OF APP](amplify/app-debug.apk)
