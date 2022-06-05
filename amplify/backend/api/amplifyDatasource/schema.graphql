@@ -12,6 +12,7 @@ type Task @model {
   description: String
   imageurl:String
   status: String
+  location: String
 
 }
 type Note @model {

@@ -26,6 +26,7 @@ public class TaskDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_task_detail);
         Bundle extras = getIntent().getExtras();
         String Titel = extras.getString("Titel").toUpperCase(Locale.ROOT);
+        String location = extras.getString("location").toUpperCase(Locale.ROOT);
         String description = extras.getString("description").toUpperCase(Locale.ROOT);
         String states = extras.getString("states").toUpperCase(Locale.ROOT);
         String imgurl = extras.getString("imgurl");
@@ -38,6 +39,9 @@ public class TaskDetailActivity extends AppCompatActivity {
 
         TextView statesV = findViewById(R.id.states);
         statesV.setText(states);
+
+        TextView taskLocation = findViewById(R.id.location);
+        taskLocation.setText(location);
 
         ImageView IM = findViewById(R.id.imageView2);
         if (imgurl != null) {

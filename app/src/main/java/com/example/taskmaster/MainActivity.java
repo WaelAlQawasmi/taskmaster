@@ -216,6 +216,7 @@ public class MainActivity extends AppCompatActivity  {
             Intent TaskDeatles=new Intent(getApplicationContext(),TaskDetailActivity.class);
             TaskDeatles.putExtra("Titel", taskBD.get(position).getTitle());
             TaskDeatles.putExtra("description", taskBD.get(position).getDescription());
+            TaskDeatles.putExtra("location", taskBD.get(position).getLocation());
             TaskDeatles.putExtra("states", taskBD.get(position).getStatus());
 
     TaskDeatles.putExtra("imgurl", taskBD.get(position).getImageurl());
