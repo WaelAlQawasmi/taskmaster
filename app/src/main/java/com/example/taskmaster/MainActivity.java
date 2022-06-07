@@ -16,6 +16,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.amplifyframework.AmplifyException;
+import com.amplifyframework.analytics.AnalyticsEvent;
+import com.amplifyframework.analytics.pinpoint.AWSPinpointAnalyticsPlugin;
 import com.amplifyframework.api.aws.AWSApiPlugin;
 import com.amplifyframework.api.graphql.model.ModelMutation;
 import com.amplifyframework.auth.cognito.AWSCognitoAuthPlugin;
@@ -91,6 +93,16 @@ public class MainActivity extends AppCompatActivity  {
         authSession("onCreate");
 
 
+
+        AnalyticsEvent event = AnalyticsEvent.builder()
+                .name("openMyApp")
+
+                .addProperty("Successful", true)
+                .addProperty("ProcessDuration", 792)
+                .build();
+
+        Amplify.Analytics.recordEvent(event);
+
         Button AddtaskButton = findViewById(R.id.Addtask);
         Button myTasks = findViewById(R.id.MyTasks);
 
@@ -113,9 +125,9 @@ public class MainActivity extends AppCompatActivity  {
         });
 
 
-//        addteams("team1");
+//      addteams("team1");
 //        addteams("team2");
-//        addteams("team3");
+//       addteams("team3");
 
         AddtaskButton.setOnClickListener(mClickMeButtonListener);
 
@@ -131,12 +143,14 @@ public class MainActivity extends AppCompatActivity  {
     @Override
     protected void onResume() {
         super.onResume();
-
+        getAndSowData();
         setUserName();
         authSession("onCreate");
 
     }
     private void setUserName() {
+        getAndSowData();
+
         TextView MYTASKS=findViewById(R.id.Uname);
         // get text out of shared preference
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -168,6 +182,7 @@ public class MainActivity extends AppCompatActivity  {
                 ModelQuery.list(Task.class,Task.TEAM_TASK_ID.eq(sharedPreferences.getString(SettingsActivity.MYTEAM, "No USERNAME Set"))),
                 response -> {
                     if(response.getData()!=null) {
+                        taskBD.clear();
                         for (Task task : response.getData()) {
                             taskBD.add(task);
                             Log.i(task.getTitle() + " NoTask SESS", "Query");
@@ -248,11 +263,15 @@ public class MainActivity extends AppCompatActivity  {
 ///////////////////////MENU//////////////////////
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        getAndSowData();
+
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        getAndSowData();
+
         switch (item.getItemId()) {
             case R.id.action_settings:
 
@@ -271,6 +290,7 @@ public class MainActivity extends AppCompatActivity  {
 
 
     private void navigateToSettings() {
+        getAndSowData();
 
         Intent settingsIntent = new Intent(this, SettingsActivity.class);
         startActivity(settingsIntent);}
@@ -336,7 +356,10 @@ public class MainActivity extends AppCompatActivity  {
 
 
     public  void configureAmplify() {
+        getAndSowData();
+
         try {
+
             Amplify.addPlugin(new AWSCognitoAuthPlugin());
             Amplify.addPlugin(new AWSApiPlugin());
             Amplify.addPlugin(new AWSDataStorePlugin());

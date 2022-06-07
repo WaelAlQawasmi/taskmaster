@@ -13,6 +13,25 @@
     },
     "categories": {
       "auth": {
+        "taskmasterb98327f3": {},
+        "true": {}
+      }
+    }
+  },
+  "wael": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-taskmaster3-wael-112325-authRole",
+      "UnauthRoleArn": "arn:aws:iam::757626003439:role/amplify-taskmaster3-wael-112325-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::757626003439:role/amplify-taskmaster3-wael-112325-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-taskmaster3-wael-112325-deployment",
+      "UnauthRoleName": "amplify-taskmaster3-wael-112325-unauthRole",
+      "StackName": "amplify-taskmaster3-wael-112325",
+      "StackId": "arn:aws:cloudformation:us-east-1:757626003439:stack/amplify-taskmaster3-wael-112325/1ccfc480-e63b-11ec-b7d9-0a7901ad7203",
+      "AmplifyAppId": "d1rccxkeg2z1el"
+    },
+    "categories": {
+      "auth": {
         "taskmasterb98327f3": {}
       }
     }
