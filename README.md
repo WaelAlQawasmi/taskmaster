@@ -48,8 +48,18 @@ the app conected with DynamoDB  to store and retrieve data from it
 ## LOCATION
 - Ask permission
   ![THE APK OF APP](screenshots/askLocation.png)
--  Show location
+- Show location
   ![THE APK OF APP](screenshots/location.png)
+##AWS pinpoint
+![pinpoint](screenshots/AwsPinPoint.png)
+
+##AWS predictions Translate
+- Before translation
+![predictions](screenshots/beforeTranslate.png)
+- After translation
+![after](screenshots/afterTranslate.png)
+- you can translate by press on translate button
+- you can speech by press on speech button
 ## Final AAB
 
 [THE APK OF APP](amplify/app-debug.apk)

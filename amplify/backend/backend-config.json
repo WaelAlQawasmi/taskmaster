@@ -51,5 +51,23 @@
       "providerPlugin": "awscloudformation",
       "dependsOn": []
     }
+  },
+  "analytics": {
+    "taskmaster": {
+      "service": "Pinpoint",
+      "providerPlugin": "awscloudformation"
+    }
+  },
+  "predictions": {
+    "translateTextca5d2bae": {
+      "providerPlugin": "awscloudformation",
+      "service": "Translate",
+      "convertType": "translateText"
+    },
+    "speechGeneratorf81a3c89": {
+      "providerPlugin": "awscloudformation",
+      "service": "Polly",
+      "convertType": "speechGenerator"
+    }
   }
 }

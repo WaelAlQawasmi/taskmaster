@@ -20,11 +20,11 @@
 
     <TextView
         android:id="@+id/description"
-        android:layout_width="198dp"
-        android:layout_height="54dp"
+        android:layout_width="146dp"
+        android:layout_height="51dp"
         android:text="TextView"
-        app:layout_constraintBottom_toTopOf="@+id/location"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/translate"
+        app:layout_constraintEnd_toStartOf="@+id/location"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/states" />
@@ -45,11 +45,11 @@
         android:layout_width="188dp"
         android:layout_height="50dp"
         android:text="TextView"
-        app:layout_constraintBottom_toTopOf="@+id/imageView2"
+        app:layout_constraintBottom_toTopOf="@+id/speech"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/description" />
+        app:layout_constraintStart_toEndOf="@+id/description"
+        app:layout_constraintTop_toBottomOf="@+id/states" />
 
     <ImageView
         android:id="@+id/imageView2"
@@ -60,6 +60,28 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/location"
+        app:layout_constraintTop_toBottomOf="@+id/translate"
         app:srcCompat="@drawable/_12x512bb" />
+
+    <Button
+        android:id="@+id/translate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Translate"
+        app:layout_constraintBottom_toTopOf="@+id/imageView2"
+        app:layout_constraintEnd_toStartOf="@+id/speech"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/description" />
+
+    <Button
+        android:id="@+id/speech"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="speech"
+        app:layout_constraintBottom_toTopOf="@+id/imageView2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/translate"
+        app:layout_constraintTop_toBottomOf="@+id/location" />
 </androidx.constraintlayout.widget.ConstraintLayout>
