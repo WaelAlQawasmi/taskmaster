@@ -55,16 +55,29 @@ import com.amplifyframework.core.Amplify;
 import com.amplifyframework.datastore.AWSDataStorePlugin;
 import com.amplifyframework.datastore.generated.model.Task;
 import com.amplifyframework.datastore.generated.model.Team;
+import com.google.android.gms.ads.AdError;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.FullScreenContentCallback;
+import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.OnUserEarnedRewardListener;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
+import com.google.android.gms.ads.interstitial.InterstitialAd;
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
+import com.google.android.gms.ads.rewarded.RewardItem;
+import com.google.android.gms.ads.rewarded.RewardedAd;
+import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
 
 import java.util.ArrayList;
 import java.util.List;
-
-public class MainActivity extends AppCompatActivity  {
-
+import com.google.android.gms.ads.rewarded.RewardedAd;
+public class MainActivity extends AppCompatActivity {
+    private RewardedAd mRewardedAd;
     public static final String TAG = MainActivity.class.getSimpleName();
     public static final String TASK_ID = "taskId";
     public static final String DATA = "data";
-
+    private InterstitialAd mInterstitialAd;
     private Handler handler;
     private final View.OnClickListener mClickMeButtonListener = new View.OnClickListener() {
         @Override
@@ -93,7 +106,6 @@ public class MainActivity extends AppCompatActivity  {
         authSession("onCreate");
 
 
-
         AnalyticsEvent event = AnalyticsEvent.builder()
                 .name("openMyApp")
 
@@ -106,8 +118,20 @@ public class MainActivity extends AppCompatActivity  {
         Button AddtaskButton = findViewById(R.id.Addtask);
         Button myTasks = findViewById(R.id.MyTasks);
 
+        Button InterstitialAd2 = findViewById(R.id.InterstitialAd);
+        Button RewardedAd2 = findViewById(R.id.RewardedAd);
+
+
+        RewardedAd2.setOnClickListener(view -> {
+            showReward();
+        });
+
+        InterstitialAd2.setOnClickListener(view -> {
+            show();
+        });
         myTasks.setOnClickListener(view -> {
-            Log.i("wgu","gooo");
+
+            Log.i("wgu", "gooo");
             Intent AllTasksActivityIntent = new Intent(getApplicationContext(), AllTasks.class);
 
             startActivity(AllTasksActivityIntent);
@@ -115,12 +139,11 @@ public class MainActivity extends AppCompatActivity  {
         });
 
 
-
         handler = new Handler(Looper.getMainLooper(), msg -> {
             String data = msg.getData().getString(DATA);
             String taskId = msg.getData().getString(TASK_ID);
             Toast.makeText(this, "The Toast Works => " + data, Toast.LENGTH_SHORT).show();
-            Log.i( " NoTask SESS", "Query");
+            Log.i(" NoTask SESS", "Query");
             return true;
         });
 
@@ -132,12 +155,33 @@ public class MainActivity extends AppCompatActivity  {
         AddtaskButton.setOnClickListener(mClickMeButtonListener);
 
 
+        MobileAds.initialize(this, new OnInitializationCompleteListener() {
+            @Override
+            public void onInitializationComplete(InitializationStatus initializationStatus) {
+            }
+        });
+        AdRequest adRequest = new AdRequest.Builder().build();
+
+        InterstitialAd.load(this, "ca-app-pub-3940256099942544/1033173712", adRequest,
+                new InterstitialAdLoadCallback() {
+                    @Override
+                    public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
+                        // The mInterstitialAd reference will be null until
+                        // an ad is loaded.
+                        mInterstitialAd = interstitialAd;
+                        Log.i(TAG, "onAdLoaded");
+                    }
+
+                    @Override
+                    public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                        // Handle the error
+                        Log.i(TAG, loadAdError.getMessage());
+                        mInterstitialAd = null;
+                    }
+                });
+
+
     }
-
-
-
-
-
 
 
     @Override
@@ -148,10 +192,11 @@ public class MainActivity extends AppCompatActivity  {
         authSession("onCreate");
 
     }
+
     private void setUserName() {
         getAndSowData();
 
-        TextView MYTASKS=findViewById(R.id.Uname);
+        TextView MYTASKS = findViewById(R.id.Uname);
         // get text out of shared preference
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -159,29 +204,29 @@ public class MainActivity extends AppCompatActivity  {
         MYTASKS.setText(sharedPreferences.getString(LoginActivity.USERNAME, "No USERNAME Set"));
         MYTASKS.setText(sharedPreferences.getString(SettingsActivity.USERNAME, "No USERNAME Set"));
     }
-    List<Task> taskBD= new ArrayList<>();
+
+    List<Task> taskBD = new ArrayList<>();
+
     @Override
     protected void onStart() {
         super.onStart();
 
 
-
         getAndSowData();
 
 
-
     }
-    private void getAndSowData() {
 
+    private void getAndSowData() {
 
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
 
         Amplify.API.query(
-                ModelQuery.list(Task.class,Task.TEAM_TASK_ID.eq(sharedPreferences.getString(SettingsActivity.MYTEAM, "No USERNAME Set"))),
+                ModelQuery.list(Task.class, Task.TEAM_TASK_ID.eq(sharedPreferences.getString(SettingsActivity.MYTEAM, "No USERNAME Set"))),
                 response -> {
-                    if(response.getData()!=null) {
+                    if (response.getData() != null) {
                         taskBD.clear();
                         for (Task task : response.getData()) {
                             taskBD.add(task);
@@ -197,7 +242,6 @@ public class MainActivity extends AppCompatActivity  {
                 },
                 error -> Log.e("MyAmplifyApp", "Query failure", error)
         );
-
 
 
         Amplify.DataStore.observe(Task.class,
@@ -220,7 +264,6 @@ public class MainActivity extends AppCompatActivity  {
         );
 
 
-
         //just type on start
         RecyclerView recyclerView = findViewById(R.id.recycle_view);
 
@@ -228,20 +271,20 @@ public class MainActivity extends AppCompatActivity  {
         ViewAdapter customRecyclerViewAdapter = new ViewAdapter(
                 taskBD, position -> {
 
-            Intent TaskDeatles=new Intent(getApplicationContext(),TaskDetailActivity.class);
+            Intent TaskDeatles = new Intent(getApplicationContext(), TaskDetailActivity.class);
             TaskDeatles.putExtra("Titel", taskBD.get(position).getTitle());
             TaskDeatles.putExtra("description", taskBD.get(position).getDescription());
             TaskDeatles.putExtra("location", taskBD.get(position).getLocation());
             TaskDeatles.putExtra("states", taskBD.get(position).getStatus());
 
-    TaskDeatles.putExtra("imgurl", taskBD.get(position).getImageurl());
+            TaskDeatles.putExtra("imgurl", taskBD.get(position).getImageurl());
 
             Log.i(TAG, "img url: " + taskBD.get(position).getImageurl());
             startActivity(TaskDeatles);
             Toast.makeText(
                     MainActivity.this,
 
-                    "The Task  => " + taskBD.get(position).getTitle()+" clicked", Toast.LENGTH_SHORT).show();
+                    "The Task  => " + taskBD.get(position).getTitle() + " clicked", Toast.LENGTH_SHORT).show();
 
 
         });
@@ -257,10 +300,7 @@ public class MainActivity extends AppCompatActivity  {
     }
 
 
-
-
-
-///////////////////////MENU//////////////////////
+    ///////////////////////MENU//////////////////////
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getAndSowData();
@@ -268,6 +308,7 @@ public class MainActivity extends AppCompatActivity  {
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
+
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         getAndSowData();
@@ -293,8 +334,8 @@ public class MainActivity extends AppCompatActivity  {
         getAndSowData();
 
         Intent settingsIntent = new Intent(this, SettingsActivity.class);
-        startActivity(settingsIntent);}
-
+        startActivity(settingsIntent);
+    }
 
 
     ///////////////////////MENU   END//////////////////////
@@ -311,8 +352,7 @@ public class MainActivity extends AppCompatActivity  {
 //    }
 
 
-
-    private void addteams(String name){
+    private void addteams(String name) {
         Team team = Team.builder()
                 .name(name)
                 .build();
@@ -355,7 +395,7 @@ public class MainActivity extends AppCompatActivity  {
     }
 
 
-    public  void configureAmplify() {
+    public void configureAmplify() {
         getAndSowData();
 
         try {
@@ -370,6 +410,100 @@ public class MainActivity extends AppCompatActivity  {
             Log.e(TAG, "Could not initialize Amplify", e);
         }
     }
+
+
+    public void showReward() {
+
+        AdRequest adRequest = new AdRequest.Builder().build();
+        RewardedAd.load(this, "ca-app-pub-3940256099942544/5224354917",
+                adRequest, new RewardedAdLoadCallback() {
+                    @Override
+                    public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                        // Handle the error.
+                        Log.d(TAG, loadAdError.getMessage());
+                        mRewardedAd = null;
+                    }
+
+                    @Override
+                    public void onAdLoaded(@NonNull RewardedAd rewardedAd) {
+                        mRewardedAd = rewardedAd;
+                        Log.d(TAG, "Ad was loaded.");
+                    }
+                });
+
+//        mRewardedAd.setFullScreenContentCallback(new FullScreenContentCallback() {
+//            @Override
+//            public void onAdShowedFullScreenContent() {
+//                // Called when ad is shown.
+//                Log.d(TAG, "Ad was shown.");
+//            }
+//
+//            @Override
+//            public void onAdFailedToShowFullScreenContent(AdError adError) {
+//                // Called when ad fails to show.
+//                Log.d(TAG, "Ad failed to show.");
+//            }
+//
+//            @Override
+//            public void onAdDismissedFullScreenContent() {
+//                // Called when ad is dismissed.
+//                // Set the ad reference to null so you don't show the ad a second time.
+//                Log.d(TAG, "Ad was dismissed.");
+//                mRewardedAd = null;
+//            }
+//        });
+
+        if (mRewardedAd != null) {
+
+            mRewardedAd.show(this, new OnUserEarnedRewardListener() {
+                @Override
+                public void onUserEarnedReward(@NonNull RewardItem rewardItem) {
+                    // Handle the reward.
+                    Log.d(TAG, "The user earned the reward.");
+                    int rewardAmount = rewardItem.getAmount();
+                    String rewardType = rewardItem.getType();
+                }
+            });
+        } else {
+            Log.d(TAG, "The rewarded ad wasn't ready yet.");
+        }
+    }
+
+
+
+
+    public  void show() {
+
+        mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback(){
+            @Override
+            public void onAdDismissedFullScreenContent() {
+                // Called when fullscreen content is dismissed.
+                Log.d("TAG", "The ad was dismissed.");
+            }
+
+            @Override
+            public void onAdFailedToShowFullScreenContent(AdError adError) {
+                // Called when fullscreen content failed to show.
+                Log.d("TAG", "The ad failed to show.");
+            }
+
+            @Override
+            public void onAdShowedFullScreenContent() {
+                // Called when fullscreen content is shown.
+                // Make sure to set your reference to null so you don't
+                // show it a second time.
+                mInterstitialAd = null;
+                Log.d("TAG", "The ad was shown.");
+            }
+        });
+
+        if (mInterstitialAd != null) {
+            mInterstitialAd.show(this);
+        } else {
+            Log.d("TAG", "The interstitial ad wasn't ready yet.");
+        }
+    }
+
 
 }
 
