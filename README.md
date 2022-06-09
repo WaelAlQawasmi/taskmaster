@@ -60,6 +60,14 @@ the app conected with DynamoDB  to store and retrieve data from it
 ![after](screenshots/afterTranslate.png)
 - you can translate by press on translate button
 - you can speech by press on speech button
+## Google AdMob
+
+- ![newm](screenshots/newMain.png)
+- if you click on **Interstitial AD** you will see
+  ![ad](screenshots/googleAds.png)
+-  if you click on **RewardedAd AD** you will see
+![ad](screenshots/readd.png)
+
 ## Final AAB
 
 [THE APK OF APP](amplify/app-debug.apk)

@@ -16,6 +16,9 @@
         android:roundIcon="@drawable/_12x512bb"
         android:supportsRtl="true"
         android:theme="@style/Theme.Taskmaster">
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-2047900943322535~6313600014"/>
         <activity
             android:name=".VerificationActivity"
             android:exported="false" />
